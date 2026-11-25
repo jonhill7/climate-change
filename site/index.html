@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Earth's Changing Climate</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="An interactive, evidence-first look at global temperature, its human and natural drivers, the main alternative explanations, and projections, wired to public climate data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,600..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="rail gutter">
+  <div class="col rail-inner">
+    <a class="rail-title" href="#top">Earth's Changing Climate</a>
+    <nav aria-label="Chapters"><ol id="rail-list">
+      <li><a href="#record">Record</a></li>
+      <li><a href="#deep-time">Deep time</a></li>
+      <li><a href="#human">Human factors</a></li>
+      <li><a href="#natural">Natural factors</a></li>
+      <li><a href="#attribution">Attribution</a></li>
+      <li><a href="#alternatives">Other explanations</a></li>
+      <li><a href="#oceans">Oceans &amp; ice</a></li>
+      <li><a href="#future">Future</a></li>
+      <li><a href="#bottom-line">Bottom line</a></li>
+      <li><a href="#data">Data</a></li>
+    </ol></nav>
+    <div class="step"><button type="button" id="prev-ch" aria-label="Previous chapter">↑</button><button type="button" id="next-ch" aria-label="Next chapter">↓</button></div>
+  </div>
+</div>
+
+<main>
+<header class="gutter" id="top">
+  <div class="col hero">
+    <div class="eyebrow">An interactive briefing · data checked <span id="built-date">recently</span></div>
+    <h1>How much has the climate changed, and why?</h1>
+    <p class="lede">This briefing walks through the measurements, the factors that can change Earth's temperature, how scientists split the warming between human and natural causes, the main alternative explanations and how well they hold up, and what different futures look like. Every chart draws on public datasets and says where its numbers come from.</p>
+    <div class="stripes-block">
+      <canvas class="stripes" id="stripes" aria-label="Warming stripes: one band per year, blue for cooler years, red for warmer years"></canvas>
+      <div class="stripes-axis"><span id="stripes-start">1850</span><span>Each band is one year of global average temperature: blue is cooler, red is warmer</span><span id="stripes-end">2025</span></div>
+    </div>
+    <div class="stats" id="hero-stats">
+      <div class="stat"><span class="k">Global temperature, latest full year <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-temp">…</span><span class="d" id="st-temp-d">Compared with the 1850–1900 average</span><span class="chip" data-status="igcc">checking</span></div>
+      <div class="stat"><span class="k">Carbon dioxide at Mauna Loa <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-co2">…</span><span class="d" id="st-co2-d">Parts per million</span><span class="chip" data-status="co2">checking</span></div>
+      <div class="stat"><span class="k">Warming attributed to human activity <span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></span><span class="v" id="st-human">…</span><span class="d" id="st-human-d">Best estimate with likely range</span><span class="chip" data-status="attr">checking</span></div>
+      <div class="stat"><span class="k">Global sea level since 1901 <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-sea">…</span><span class="d" id="st-sea-d">Tide gauges and satellites</span><span class="chip" data-status="sea">checking</span></div>
+    </div>
+    <div class="kinds" aria-label="Four kinds of numbers">
+      <div class="kinds-head"><h2 class="kinds-title">Four kinds of numbers</h2><p>Every chart is labelled with the kind of evidence behind it. They carry different levels of certainty and should not be compared as if they were the same thing.</p></div>
+      <div class="kinds-grid">
+        <div><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><p>Read directly from instruments: thermometers, Mauna Loa air samples, tide gauges, satellites. Still processed (gaps filled, instruments cross-calibrated), and less complete further back in time.</p></div>
+        <div><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><p>Inferred indirectly: ice cores, tree rings, corals, sediments, sunspot counts. Usually averaged over decades to millennia, with dating and calibration errors, so short swings are smoothed out or lost.</p></div>
+        <div><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span><p>Calculated from physics and models, checked against observations: how strongly each factor pushes on climate, and how much warming each cause produced. Ranges reflect uncertainty in both.</p></div>
+        <div><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span><p>Model results for assumed futures. They depend on emissions choices as well as on physics, so they are "if-then" statements, not forecasts.</p></div>
+      </div>
+    </div>
+    <div class="how">
+      <span><span class="chip live">live</span> fetched from the source as this page loaded</span>
+      <span><span class="chip snap">snapshot</span> the source could not be reached from this page, so a saved copy is shown</span>
+      <span>Use the chapter bar, or press <kbd>J</kbd>/<kbd>K</kbd> to step through chapters. Hover or tap any chart for values.</span>
+    </div>
+  </div>
+</header>
+
+<!-- 1. THE RECORD -->
+<section class="chapter gutter" id="record"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 1 · What has been measured</div>
+    <h2>The thermometer record</h2>
+    <p class="lede">Several independent groups build global temperature records from weather stations, ships and buoys. They use different methods and make different choices, yet they tell the same story: roughly flat until the early 1900s, a rise to the 1940s, a pause, and a steady climb since the 1970s.</p>
+  </div>
+  <div class="figure">
+    <div class="figure-head">
+      <div><h3>Global surface temperature, 1850 to today</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div><div class="sub">Difference from the 1850–1900 average, °C</div></div>
+      <div class="controls" id="rec-toggles"></div>
+    </div>
+    <div class="controls">
+      <span class="lbl">Show</span>
+      <div class="seg" id="rec-smooth"><button type="button" aria-pressed="true" data-v="0">Each year</button><button type="button" aria-pressed="false" data-v="10">10-year average</button></div>
+      <div class="seg" id="rec-marks"><button type="button" aria-pressed="false" data-v="none">No markers</button><button type="button" aria-pressed="true" data-v="enso">Strong El Niños</button><button type="button" aria-pressed="false" data-v="volc">Big eruptions</button></div>
+    </div>
+    <div id="chart-record"></div>
+    <p class="cap">Lines: <b>IGCC composite</b> (the multi-dataset average used by the Indicators of Global Climate Change project<sup class="ref"><a href="#r1">1</a></sup>), <b>NASA GISTEMP</b><sup class="ref"><a href="#r3">3</a></sup>, <b>Met Office HadCRUT5</b><sup class="ref"><a href="#r4">4</a></sup> and <b>Berkeley Earth</b><sup class="ref"><a href="#r5">5</a></sup>. Each group uses its own baseline, so the individual records are shifted to match the composite over 1981–2010. Berkeley Earth was started in 2010 partly to test concerns raised by skeptics about station quality and adjustments; it reached the same result.</p>
+    <p class="cap"><b>Measured, but less certain further back.</b> The shaded band around Berkeley Earth is its 95% uncertainty range. It is about <span class="num" id="be-unc-early">±0.2</span> °C in the 1850s, when most measurements came from Europe, North America and shipping lanes, and narrows to about <span class="num" id="be-unc-late">±0.03</span> °C today with near-global coverage. Before 1850 there are too few thermometers for a global average, so earlier temperatures must be reconstructed (Chapter 2).</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>The last few years, month by month</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div><div class="sub">HadCRUT5 and GISTEMP monthly values, °C vs 1850–1900</div></div></div>
+      <div id="chart-monthly"></div>
+      <p class="cap" id="monthly-cap">Individual months bounce around by a few tenths of a degree, largely because of El Niño and La Niña in the Pacific.</p>
+    </div>
+    <div class="prose" style="align-content:start">
+      <h3>Reading the record fairly</h3>
+      <p><strong>Short wiggles are mostly natural.</strong> El Niño years (warm Pacific) are hotter and La Niña years cooler, by roughly 0.1–0.2 °C globally. Large volcanic eruptions cool the planet for one to three years.</p>
+      <p><strong>Not all of the early warming was human-caused.</strong> The rise from about 1910 to 1945 had a sizeable natural component: a brighter Sun, few large eruptions, and ocean variability, alongside rising greenhouse gases.</p>
+      <p><strong>2023 and 2024 jumped.</strong> 2024 was the first calendar year above 1.5 °C in most datasets. A strong El Niño explains part of the jump; the rest is still being studied (see Chapter 6). <span id="enso-now">A new strong El Niño developed during 2026, which usually lifts the following year's global temperature.<sup class="ref"><a href="#r15">15</a></sup></span></p>
+      <p><strong>One year above 1.5 °C is not the same as breaching the Paris 1.5 °C limit,</strong> which refers to a 20-year average.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 2. DEEP TIME -->
+<section class="chapter gutter" id="deep-time"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 2 · Longer context</div>
+    <h2>Climate has always changed. How does today compare?</h2>
+    <p class="lede">Before about 1850 there are no global thermometer records. Earlier temperatures are <strong>reconstructed</strong> from natural archives such as ice cores, tree rings, corals and lake and ocean sediments. These are estimates, not measurements, and they differ from the modern record in ways that matter for any comparison.</p>
+  </div>
+  <div class="figure">
+    <div class="figure-head"><div><h3>Global temperature in past climates</h3><div class="kind-row"><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Assessed ranges relative to 1850–1900, °C (IPCC AR6)</div></div></div>
+    <div id="chart-paleo"></div>
+    <p class="cap">Dots mark the IPCC's best estimate where one is given, otherwise the middle of its assessed range; whiskers show the assessed range<sup class="ref"><a href="#r2">2</a></sup><sup class="ref"><a href="#r28">28</a></sup>. <b>These are not like-for-like.</b> Past values are reconstructed averages over centuries to millennia. The red dot is a measured 10-year average, and the last row is a projection.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>What the modern record would look like as a proxy</h3><div class="kind-row"><span class="kind obs">Measured</span></div><div class="sub">The measured 1850–<span class="be-end">2025</span> record, averaged into blocks the way many proxies average time, °C vs 1850–1900</div></div></div>
+      <div class="controls"><span class="lbl">Averaging window</span><div class="seg" id="res-win"><button type="button" aria-pressed="true" data-v="1">1 year</button><button type="button" aria-pressed="false" data-v="30">30 years</button><button type="button" aria-pressed="false" data-v="100">100 years</button><button type="button" aria-pressed="false" data-v="999">Whole record</button></div></div>
+      <div id="chart-res"></div>
+      <p class="cap" id="res-cap">Pick a wider window to see what a lower-resolution record would keep.</p>
+    </div>
+    <div class="prose" style="align-content:start">
+      <h3>Why reconstructed and measured temperatures don't compare evenly</h3>
+      <p><strong>Short swings get smoothed away.</strong> Many proxy records blend decades to centuries into one value, and combining records with different dating errors smooths them further. One widely used reconstruction of the last 11,000 years keeps essentially none of the variability on time scales shorter than about 300 years<sup class="ref"><a href="#r33">33</a></sup>. Year-to-year swings like El Niño, and even a century-long excursion, could be muted or invisible.</p>
+      <p><strong>That cuts both ways.</strong> A brief warm spike in the distant past could be hidden, so "warmest in 100,000 years" compares today's measured average with smoothed estimates. On the other hand, today's warming is projected to persist for centuries because CO₂ stays in the air, so it is unlikely to be a short spike that a future proxy would miss.</p>
+      <p><strong>Errors are larger and harder to pin down.</strong> Proxy readings depend on calibration (how tree growth or a shell's chemistry maps to temperature), often reflect one season or one region, and carry dating errors from decades to thousands of years.</p>
+      <p><strong>How scientists compare fairly:</strong> they compare averages over matching time spans, and they compare rates of change only where records have high resolution. For example, the "fastest in 2,000 years" finding uses annually resolved tree-ring and coral records for that period<sup class="ref"><a href="#r23">23</a></sup>.</p>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact"><h4>Bigger natural swings did happen</h4><p>Ice ages came and went on cycles of about 100,000 years, paced by slow changes in Earth's orbit and amplified by CO₂ and ice. Swings of 5–7 °C between glacial and warm periods are far larger than today's change.</p></div>
+    <div class="fact"><h4>But usually far more slowly</h4><p>Leaving the last ice age took about 10,000 years for roughly 6 °C, an average of under 0.1 °C per century. That is an average over a reconstruction, so faster regional jumps (such as those around Greenland at the end of the ice age) are not ruled out. The current rate is about 0.27 °C per decade<sup class="ref"><a href="#r1">1</a></sup>. The IPCC found that warming since 1970 has been faster than in any other 50-year period in at least 2,000 years<sup class="ref"><a href="#r2">2</a></sup>.</p></div>
+    <div class="fact"><h4>CO₂ is outside its recent natural range</h4><p>Ice cores show CO₂ between about 180 and 300 ppm over the past 800,000 years. It is now above 420 ppm, the highest in at least 2 million years<sup class="ref"><a href="#r2">2</a></sup>. The last time CO₂ was similar (mid-Pliocene, about 3 million years ago) the world was 2.5–4 °C warmer and seas were many metres higher.</p></div>
+    <div class="fact"><h4>Medieval warmth and the Little Ice Age</h4><p>These were real, but large-scale reconstructions find they were not globally synchronous: different regions peaked at different centuries. The current warming is happening in about 98% of the world at once<sup class="ref"><a href="#r23">23</a></sup>.</p></div>
+  </div>
+</div></section>
+
+<!-- 3. HUMAN FACTORS -->
+<section class="chapter gutter" id="human"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 3 · What can change Earth's temperature</div>
+    <h2>Human factors: greenhouse gases, pollution and land</h2>
+    <p class="lede">Earth's temperature is set by a balance: sunlight absorbed versus heat radiated back to space. Anything that tips this balance is called a <em>forcing</em>, measured in watts per square metre (W/m²). Greenhouse gases trap outgoing heat (warming); sulfate pollution reflects sunlight and brightens clouds (cooling); clearing forests changes how much light the ground reflects.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>Carbon dioxide in the air</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub" id="co2-sub">Parts per million</div></div>
+        <div class="seg" id="co2-range"><button type="button" aria-pressed="true" data-v="ml">Mauna Loa, monthly</button><button type="button" aria-pressed="false" data-v="long">Since 1750</button></div></div>
+      <div id="chart-co2"></div>
+      <p class="cap">Monthly readings from Mauna Loa Observatory, Hawaii (NOAA and Scripps)<sup class="ref"><a href="#r6">6</a></sup>; the zigzag is plants breathing in and out with the Northern Hemisphere seasons. The longer series joins ice-core and air measurements<sup class="ref"><a href="#r1">1</a></sup>. Ice-core CO₂ comes from real air trapped in bubbles, but the bubbles close slowly, so each sample blends several decades. That makes it a smoothed record, shown dashed.</p>
+    </div>
+    <div class="figure">
+      <div class="figure-head"><div><h3>Greenhouse gas emissions</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Billion tonnes of CO₂-equivalent per year</div></div></div>
+      <div id="chart-emis"></div>
+      <div class="legend" id="emis-legend"></div>
+      <p class="cap">Fossil fuels and industry dominate. Methane is the second largest. Emissions are still rising, though more slowly than in the 2000s<sup class="ref"><a href="#r1">1</a></sup>.</p>
+    </div>
+  </div>
+
+  <div class="figure">
+    <div class="figure-head">
+      <div><h3>Every forcing since 1750, stacked</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Effective radiative forcing, W/m², relative to 1750. Above zero warms, below zero cools.</div></div>
+      <div class="controls" id="erf-toggles"></div>
+    </div>
+    <div id="chart-erf"></div>
+    <p class="cap">Click a factor to hide or show it; the black line is the net. Note the sharp downward spikes: volcanic eruptions. The solar and volcanic values are shown relative to their long-term average, so they hover near zero. Data: IGCC 2025<sup class="ref"><a href="#r1">1</a></sup>, which updates the IPCC AR6 method each year.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>Size of each factor today</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub" id="erf-bars-sub">Forcing relative to 1750, W/m², with 5–95% range</div></div></div>
+      <div id="chart-erf-bars"></div>
+    </div>
+    <div class="prose" style="align-content:start">
+      <h3>Two human effects pull in opposite directions</h3>
+      <p><strong>Greenhouse gases</strong> (CO₂, methane, nitrous oxide, CFCs and others) add about <span class="num" id="txt-wmghg">3.6</span> W/m². CO₂ alone is about <span class="num" id="txt-co2erf">2.4</span> W/m², and its effect is well constrained by laboratory physics and satellite measurements.</p>
+      <p><strong>Aerosols</strong>, tiny particles mostly from burning sulfur-containing coal and oil, reflect sunlight and make clouds brighter. They offset roughly a quarter to a third of greenhouse warming. This is the <strong>largest uncertainty</strong> in the human influence: the 5–95% range runs from about <span class="num" id="txt-aer-lo">−1.7</span> to <span class="num" id="txt-aer-hi">−0.4</span> W/m².</p>
+      <p>As air pollution has been cleaned up (China since about 2010, and global shipping fuel rules in 2020) this cooling has weakened, which unmasks some warming.</p>
+      <p><strong>Land use</strong> (mostly deforestation) has a small net cooling effect on reflected sunlight, but deforestation is also a major CO₂ source, counted under CO₂.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 4. NATURAL FACTORS -->
+<section class="chapter gutter" id="natural"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 4 · What can change Earth's temperature</div>
+    <h2>Natural factors: the Sun, volcanoes, oceans and orbits</h2>
+    <p class="lede">Natural factors have driven every climate change before the industrial era, so any honest account has to test them. Each one leaves a measurable trace.</p>
+  </div>
+  <div class="figure">
+    <div class="tabs" role="tablist" id="nat-tabs">
+      <button type="button" role="tab" aria-selected="true" data-tab="sun">The Sun</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="volc">Volcanoes</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="ocean">Ocean cycles</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="orbit">Earth's orbit</button>
+    </div>
+    <div class="tabpanel" data-panel="sun">
+      <div class="grid-2">
+        <div><h4 style="margin-bottom:6px">Sunlight reaching Earth (total solar irradiance), W/m² <span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-tsi"></div></div>
+        <div><h4 style="margin-bottom:6px">Global temperature, °C vs 1850–1900 (10-year average) <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-tsi-temp"></div></div>
+      </div>
+      <p class="cap">The Sun brightens and dims by about 0.1% over each 11-year cycle. It brightened slightly in the first half of the 1900s and has been flat to slightly dimmer since the 1980s, while temperature rose most steeply. Satellites have measured solar output directly since 1978; earlier values are reconstructed from sunspot counts and are less certain (shaded and dashed). Solar data: IGCC composite of satellite and reconstructed irradiance<sup class="ref"><a href="#r1">1</a></sup>.</p>
+    </div>
+    <div class="tabpanel" data-panel="volc" hidden>
+      <div class="kind-row"><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div>
+      <div id="chart-volc"></div>
+      <p class="cap">Stratospheric aerosol optical depth: how much sunlight volcanic haze blocks high in the atmosphere. Before satellites (1979) it is reconstructed from sulfate in ice cores and historical accounts. Large eruptions cool the globe by 0.1–0.5 °C for one to three years, then the haze settles out. They cannot cause a long-term warming trend; a quiet volcanic period can only cause a small, temporary rebound<sup class="ref"><a href="#r1">1</a></sup>.</p>
+    </div>
+    <div class="tabpanel" data-panel="ocean" hidden>
+      <div class="grid-2">
+        <div><h4 style="margin-bottom:6px">Heat gained by the oceans since 1971, zettajoules <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-ohc"></div></div>
+        <div class="prose" style="align-content:start">
+          <p><strong>El Niño / La Niña (ENSO)</strong> swaps heat between the deep Pacific and the surface every 2–7 years, moving global temperature up or down by about 0.1–0.2 °C.</p>
+          <p><strong>The Pacific Decadal Oscillation (PDO) and Atlantic Multidecadal Variability (AMO/AMV)</strong> are slower patterns lasting decades. They likely contributed to the 1940s warmth and the slower warming of 1998–2012.</p>
+          <p><strong>The key test:</strong> if the surface were warming because the ocean was releasing stored heat, ocean heat content would fall. Instead the oceans have gained a very large amount of heat, about <span class="num" id="txt-ohc">500</span> zettajoules since 1971<sup class="ref"><a href="#r1">1</a></sup>, roughly the energy of 15 times the world's yearly energy use every year. The whole system is gaining energy, which points to an outside push rather than heat being shuffled around.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tabpanel" data-panel="orbit" hidden>
+      <div class="facts">
+        <div class="fact"><h4>Milankovitch cycles</h4><p>Slow wobbles in Earth's tilt (41,000-year cycle), the shape of its orbit (100,000 years) and the direction its axis points (about 23,000 years) shift where and when sunlight falls. They pace the ice ages.</p></div>
+        <div class="fact"><h4>The current orbital trend is slight cooling</h4><p>Northern summer sunshine has been slowly declining for about 10,000 years, which is why temperatures drifted gently downward through the last few thousand years before the industrial era.</p></div>
+        <div class="fact"><h4>Far too slow to matter this century</h4><p>Orbital changes act over thousands of years. Their effect over 150 years is negligible. Studies suggest the next ice age would not begin for at least 50,000 years, and later if CO₂ stays high<sup class="ref"><a href="#r25">25</a></sup>.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><strong>Net natural forcing today:</strong> solar plus volcanic adds about <span class="num" id="txt-nat-erf">+0.3</span> W/m² relative to 1750, versus about <span class="num" id="txt-anth-erf">+3.1</span> W/m² from human activity<sup class="ref"><a href="#r1">1</a></sup>. The natural number is mostly a quiet volcanic period compared with the long-term average, which is temporary.</div>
+</div></section>
+
+<!-- 5. ATTRIBUTION -->
+<section class="chapter gutter" id="attribution"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 5 · Putting it together</div>
+    <h2>How much of the warming is human-caused?</h2>
+    <p class="lede">Attribution studies take the measured forcings, physical models of how the climate responds, and the observed pattern of warming across space and time, then ask which combination of causes best explains what was observed. Three independent methods are updated every year.</p>
+  </div>
+  <div class="figure">
+    <div class="figure-head">
+      <div><h3>Observed warming versus its estimated causes</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">°C relative to 1850–1900; shaded bands are 5–95% ranges</div></div>
+      <div class="controls"><span class="lbl">Method</span><div class="seg" id="attr-method"><button type="button" aria-pressed="true" data-v="walsh">Global Warming Index</button><button type="button" aria-pressed="false" data-v="gillett">Regression</button><button type="button" aria-pressed="false" data-v="ribes">Kriging</button></div></div>
+    </div>
+    <div class="controls" id="attr-toggles"></div>
+    <div id="chart-attr"></div>
+    <p class="cap">Dots are measured; the lines are estimates. Dots: observed annual temperature (IGCC composite). The three methods are the Global Warming Index (Walsh, Haustein, Otto and colleagues), optimal-fingerprint regression (Gillett), and constrained kriging (Ribes), as used in IPCC AR6 and updated by IGCC 2025<sup class="ref"><a href="#r1">1</a></sup>. "Other human" is mostly aerosol cooling.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>The split for <span id="attr-year">2025</span></h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Assessed contribution to warming since 1850–1900, °C</div></div></div>
+      <div id="chart-attr-bars"></div>
+      <p class="cap">Best estimates with 5–95% ranges from the IGCC 2025 multi-method assessment<sup class="ref"><a href="#r1">1</a></sup>. Year-to-year natural variability (El Niño, etc.) adds roughly ±0.2 °C on top in any single year.</p>
+    </div>
+    <div class="figure">
+      <div class="figure-head"><div><h3>Warming by what was emitted</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">°C of warming in 2019 relative to 1750, by emitted substance</div></div></div>
+      <div id="chart-species"></div>
+      <p class="cap">Grouped by what comes out of the tailpipe or smokestack, as in IPCC AR6 Figure SPM.2. Sulfur dioxide (SO₂) has masked a large share of warming. Data: IGCC (Hausfather)<sup class="ref"><a href="#r1">1</a></sup>.</p>
+    </div>
+  </div>
+  <div class="chapter-head"><h3>Fingerprints that separate the causes</h3></div>
+  <div class="facts">
+    <div class="fact"><h4>Upper atmosphere is cooling</h4><p>Greenhouse gases trap heat low down, so the stratosphere cools while the surface warms. A brighter Sun would warm both. Satellites show strong stratospheric cooling<sup class="ref"><a href="#r31">31</a></sup>.</p></div>
+    <div class="fact"><h4>Nights and winters warm faster</h4><p>Extra greenhouse gases reduce heat loss at night and in winter more than they add heat by day, the pattern seen in station records.</p></div>
+    <div class="fact"><h4>Less heat escapes at CO₂'s wavelengths</h4><p>Satellite and ground spectrometers have measured the extra infrared trapped specifically in the CO₂ absorption bands<sup class="ref"><a href="#r17">17</a></sup>.</p></div>
+    <div class="fact"><h4>The added carbon is fossil carbon</h4><p>Fossil carbon is low in carbon-13 and has no carbon-14. Both ratios in the air are falling as CO₂ rises, and atmospheric oxygen is declining in step with combustion<sup class="ref"><a href="#r32">32</a></sup>.</p></div>
+  </div>
+</div></section>
+
+<!-- 6. ALTERNATIVES -->
+<section class="chapter gutter" id="alternatives"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 6 · Testing other explanations</div>
+    <h2>Alternative explanations, weighed on the evidence</h2>
+    <p class="lede">Some of these ideas come from published scientists, others from public debate. Each card states the claim in its strongest form, the evidence that supports it, the evidence against it, and the current best quantitative estimate. The last two cards cover claims that the situation is <em>worse</em> than the mainstream estimate, because skepticism should run in both directions.</p>
+  </div>
+  <div class="controls"><button type="button" class="btn" id="hyp-expand" aria-pressed="false">Open all cards</button></div>
+  <div class="hyps" id="hyps">
+
+    <details class="hyp" id="h-natural">
+      <summary><h3>“It's a natural trend, a recovery from the Little Ice Age”</h3><span class="q">Could the warming since 1850 be mainly a natural rebound or long cycle?</span><span class="verdict"><b>~0.0 °C</b>natural forcing contribution, ±0.2 °C internal variability</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: climate always changes. The 1850s were at the tail of the Little Ice Age (roughly 1450–1850), and the warming since is a return toward medieval or Roman-era warmth, possibly part of a millennial cycle.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>The Little Ice Age was real, especially in the Northern Hemisphere, and was linked to clusters of volcanic eruptions and low solar activity (for example the Maunder Minimum, 1645–1715).</li>
+            <li>Part of the early 20th-century warming (about 1910–1945) had natural causes: a brighter Sun, few eruptions and ocean variability.</li>
+            <li>Paleoclimate records show earlier warm periods in some regions.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>"Recovery" is not a physical mechanism. Warming requires extra energy; the measured natural drivers (Sun, volcanoes, orbit) show no sustained upward push since 1950.</li>
+            <li>The ocean is gaining heat at every depth measured, so heat is not just being moved around within the system.</li>
+            <li>Orbital forcing has been nudging the climate cooler for several thousand years.</li>
+            <li>Past warm periods were regional and occurred at different times in different places; the present warming is global and simultaneous<sup class="ref"><a href="#r23">23</a></sup>.</li>
+            <li>Recent decades are warmer than any multi-century period in more than 100,000 years<sup class="ref"><a href="#r2">2</a></sup>.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Natural forcings (solar and volcanic) contributed <span class="num" id="h-nat-val">+0.04 °C</span> (5–95%: −0.1 to +0.2 °C) of the warming to <span class="hy">2025</span>; internal variability likely adds or subtracts up to about 0.2 °C<sup class="ref"><a href="#r1">1</a></sup><sup class="ref"><a href="#r2">2</a></sup>. Natural factors matter a lot for year-to-year and decade-to-decade swings, much less for the century-scale trend.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-sun">
+      <summary><h3>“The Sun is the main driver”</h3><span class="q">Including the idea that cosmic rays, modulated by the Sun, change cloud cover</span><span class="verdict"><b>±0.1 °C</b>solar and volcanic contribution, 1850–1900 to 2010–2019</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: solar activity rose through the 20th century to a "grand maximum", and either directly (brighter Sun) or indirectly (fewer cosmic rays, fewer low clouds) caused most of the warming. Some researchers argue that the solar records chosen by the IPCC understate solar variability, and that with other solar reconstructions and rural-only temperature records, the Sun could explain much of the warming<sup class="ref"><a href="#r21">21</a></sup>.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>The Sun did brighten slightly from the late 1800s to the mid-1900s, overlapping with early warming.</li>
+            <li>Solar lows coincide with some cold periods in the paleo record.</li>
+            <li>Reconstructions of solar output before satellites disagree, and some (for example those built on the ACRIM satellite composite) show larger changes.</li>
+            <li>Cosmic rays can seed tiny particles in the laboratory (the CERN CLOUD experiment confirmed the mechanism exists)<sup class="ref"><a href="#r16">16</a></sup>.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>Satellites have measured solar output directly since 1978. It shows no upward trend (if anything a slight decline) while global temperature rose about 0.9 °C.</li>
+            <li>A solar cause would warm the whole atmosphere. The stratosphere has cooled, the signature of greenhouse gases<sup class="ref"><a href="#r31">31</a></sup>.</li>
+            <li>CLOUD found the cosmic-ray effect on cloud-forming particles is too small to matter for climate<sup class="ref"><a href="#r16">16</a></sup>; cloud cover has not tracked the cosmic-ray record.</li>
+            <li>The whole solar cycle changes forcing by only about 0.1–0.2 W/m², versus about 3 W/m² of human forcing.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Solar forcing today is about <span class="num" id="h-sun-val">+0.1 W/m²</span> relative to 1750, against about +3.1 W/m² from human activity<sup class="ref"><a href="#r1">1</a></sup>. IPCC AR6 assessed the combined solar and volcanic contribution to warming from 1850–1900 to 2010–2019 at −0.1 to +0.1 °C<sup class="ref"><a href="#r2">2</a></sup>. A minority of researchers dispute the choice of solar record; this remains an active, if small, debate.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-ocean">
+      <summary><h3>“Ocean cycles like the AMO and PDO explain it”</h3><span class="q">Could slow ocean oscillations be lifting surface temperatures?</span><span class="verdict"><b>±0.2 °C</b>likely range for internal variability since 1850–1900</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: the Atlantic and Pacific have multidecadal rhythms (roughly 60–70 years) that happened to be in warm phases recently. Some authors fit cycles of this kind to the temperature record and conclude that the human contribution is overstated.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>ENSO clearly drives year-to-year swings; about a third of the 2022-to-2023 jump has been attributed to the shift from La Niña to El Niño<sup class="ref"><a href="#r12">12</a></sup>.</li>
+            <li>The 1998–2012 "slowdown" in surface warming was linked to a cool-phase Pacific and more heat going into the deep ocean.</li>
+            <li>North Atlantic variability likely contributed to the mid-century warm period and to recent Arctic warming.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>Oscillations move heat around; they do not create it. If the oceans were warming the air, ocean heat content would fall. It has risen by about <span class="num" id="h-ohc">500</span> zettajoules since 1971.</li>
+            <li>All ocean basins and depths are warming together, which does not fit a regional see-saw.</li>
+            <li>Instrumental records cover only two or three cycles of a 60-year rhythm, so statistical cycle fits are easy to overfit and have not predicted the post-2010 warming.</li>
+            <li>Earth's measured energy imbalance (more energy in than out) roughly doubled from the mid-2000s to the early 2020s<sup class="ref"><a href="#r29">29</a></sup>.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>IPCC AR6 assessed the likely contribution of internal variability to warming since 1850–1900 at −0.2 to +0.2 °C<sup class="ref"><a href="#r2">2</a></sup>. Ocean cycles are important for explaining wiggles and decade-scale pauses and surges, not the long-term rise.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-hunga">
+      <summary><h3>“Water vapour from the 2022 Hunga Tonga eruption caused the recent heat”</h3><span class="q">Did the underwater volcano's huge injection of water warm the planet in 2023–2024?</span><span class="verdict"><b>≈ 0 °C</b>net global effect; slight cooling in 2022–23 is the more common finding</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: in January 2022 the Hunga Tonga–Hunga Ha'apai volcano blasted an unprecedented amount of water into the stratosphere, about 146 million tonnes, raising stratospheric water vapour by roughly 10%<sup class="ref"><a href="#r7">7</a></sup>. Water vapour is a greenhouse gas, and the record heat of 2023–2024 followed.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>The water injection was genuinely unprecedented in the satellite era, and it lingers for years.</li>
+            <li>The water vapour itself does warm: IGCC estimates its forcing at about <span class="num" id="h-h2o">+0.15</span> W/m² in 2023–2024<sup class="ref"><a href="#r1">1</a></sup>.</li>
+            <li>An early modelling study suggested the water could raise the chance of temporarily exceeding 1.5 °C in the following years<sup class="ref"><a href="#r11">11</a></sup>.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>The eruption also released sulfur dioxide, which formed reflective sulfate haze. Studies find this cooling equalled or outweighed the water's warming, especially in 2022–2023.</li>
+            <li>A 2026 multi-model study found a net global forcing of −0.19 ± 0.06 W/m² for 2022–2023 (cooling), with sulfate dominating<sup class="ref"><a href="#r9">9</a></sup>.</li>
+            <li>Satellite-based estimates found the eruption cooled the Southern Hemisphere by about 0.1 °C in 2022–2023<sup class="ref"><a href="#r8">8</a></sup>; another estimate put the cooling at under 0.04 °C<sup class="ref"><a href="#r10">10</a></sup>.</li>
+            <li>Even taken alone, the water vapour forcing is about 5% of the human forcing, and the long-term warming started decades before 2022.</li>
+          </ul></div>
+        </div>
+        <div class="figure" style="padding:12px 12px 8px">
+          <div class="figure-head"><div><h4>Hunga's forcing next to the human total <span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></h4><div class="sub">W/m². Hunga values are changes relative to 2021, from the IGCC volcanic series</div></div></div>
+          <div id="chart-hunga"></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Net effect on global temperature small, a few hundredths of a degree either way. Most studies find slight net cooling in the first two years and a near-zero or slightly positive effect after the sulfate cleared<sup class="ref"><a href="#r8">8</a></sup><sup class="ref"><a href="#r9">9</a></sup><sup class="ref"><a href="#r10">10</a></sup>. The 2023–2024 jump is better explained by El Niño, the solar maximum, cleaner shipping fuel and reduced low cloud (see the last card).</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-sens">
+      <summary><h3>“CO₂'s effect is saturated, or climate sensitivity is low”</h3><span class="q">Does adding more CO₂ still matter, and how much warming per doubling?</span><span class="verdict"><b>3 °C</b>per CO₂ doubling, likely 2.5–4 °C (IPCC AR6)</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: CO₂ already absorbs nearly all the infrared it can, so more CO₂ adds little. A related, more technical claim is that the climate's sensitivity (warming per doubling of CO₂) is at the low end, around 1.5–2 °C, based on observed warming and energy budgets<sup class="ref"><a href="#r18">18</a></sup>.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>The centre of CO₂'s main absorption band is saturated, and CO₂'s effect grows logarithmically: each doubling adds about the same forcing (about 3.9 W/m²), so each extra ppm matters a little less than the last.</li>
+            <li>Some energy-budget studies using observed warming found best estimates near 1.5–2.2 °C<sup class="ref"><a href="#r18">18</a></sup>.</li>
+            <li>A subset of the latest climate models do run "too hot" compared with observations, a problem the modelling community itself flagged<sup class="ref"><a href="#r20">20</a></sup>; IPCC AR6 did not rely on raw model averages for this reason.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>Saturation at the band centre does not stop the effect: added CO₂ absorbs more in the band's wings and raises the altitude from which heat escapes, where it is colder. The growth in trapped infrared has been measured directly at the surface<sup class="ref"><a href="#r17">17</a></sup>.</li>
+            <li>Simple energy-budget estimates are biased low because the recent warming pattern (a cool eastern Pacific) is unusual and expected to change.</li>
+            <li>Independent lines of evidence (physics of feedbacks, the historical record, and past climates like the last ice age) converge near 3 °C<sup class="ref"><a href="#r19">19</a></sup>.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Equilibrium climate sensitivity: best estimate 3 °C, likely 2.5–4 °C, very likely 2–5 °C. The shorter-term transient response is about 1.8 °C (likely 1.4–2.2 °C)<sup class="ref"><a href="#r2">2</a></sup>. Even at the low end, warming continues while emissions continue; a lower sensitivity buys time but does not stop it.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-record">
+      <summary><h3>“The temperature record is distorted by cities and adjustments”</h3><span class="q">Are urban heat islands or data adjustments creating the trend?</span><span class="verdict"><b>Small</b>urban effect on the global trend; adjustments reduce the global trend</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: many weather stations sit in growing towns or near pavement and air conditioners, and raw data are "adjusted" by agencies, so the warming may be an artefact.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>Urban heat islands are real: cities can be several degrees warmer than the surrounding countryside, especially at night.</li>
+            <li>Station siting is sometimes poor, and stations move or change equipment, so adjustments are necessary and involve judgement.</li>
+            <li>Land records in some countries were adjusted upward over time, which understandably attracts scrutiny.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>About 70% of the surface is ocean, with no cities, and ocean records show warming.</li>
+            <li>Satellite measurements of the lower atmosphere, including the series run by researchers often skeptical of mainstream estimates (UAH), also show warming.</li>
+            <li>Rural-only station subsets show similar warming to the full network.</li>
+            <li>Taken together, adjustments <em>reduce</em> the long-term global warming trend, mainly because early ship measurements are corrected upward<sup class="ref"><a href="#r30">30</a></sup>.</li>
+            <li>Berkeley Earth was set up in part to test these concerns, with some funding from foundations associated with skeptics, and confirmed the trend<sup class="ref"><a href="#r5">5</a></sup>.</li>
+            <li>Independent indicators agree: rising seas, shrinking glaciers and Arctic sea ice, earlier springs, rising ocean heat.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Urbanization contributes a small fraction of the measured global land trend and much less of the land-plus-ocean global average<sup class="ref"><a href="#r2">2</a></sup>. The four records in Chapter 1 agree closely despite different methods.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-co2">
+      <summary><h3>“The CO₂ rise is natural, from oceans or volcanoes”</h3><span class="q">Is human activity really the source of the extra CO₂?</span><span class="verdict"><b>~100%</b>of the rise since 1750 attributed to humans</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: nature emits about 20 times more CO₂ each year than people do (from oceans, plants and soils), and in past ice-age cycles CO₂ followed temperature, so the current rise may be a consequence of warming rather than its cause. Volcanoes are also sometimes cited.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>Natural flows of carbon are much larger than human emissions in both directions.</li>
+            <li>In ice-age cycles, CO₂ changes sometimes lagged temperature by centuries: orbital changes warmed the oceans, which released CO₂, which then amplified the warming.</li>
+            <li>Warmer water holds less CO₂, so warming oceans do release some.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>Mass balance: people emit about <span class="num" id="h-emis">43</span> billion tonnes of CO₂ a year, and the atmosphere gains only about half of that. Nature as a whole is a net <em>absorber</em>.</li>
+            <li>The ocean is absorbing CO₂ and becoming more acidic, the opposite of what would happen if it were the source.</li>
+            <li>Isotopes fingerprint the source: falling carbon-13 and carbon-14 ratios match fossil carbon, and oxygen is declining in step with burning<sup class="ref"><a href="#r32">32</a></sup>.</li>
+            <li>Volcanoes emit roughly 0.3–0.4 billion tonnes of CO₂ a year, around 1% of human emissions<sup class="ref"><a href="#r24">24</a></sup>.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>The rise from about 278 ppm in 1750 to over 420 ppm today is attributed essentially entirely to human emissions. The ice-age lag is real, and it shows that CO₂ acts as both a cause and an amplifier of warming<sup class="ref"><a href="#r2">2</a></sup>.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-accel">
+      <summary><h3>“Warming is accelerating much faster than the mainstream estimate”</h3><span class="q">A claim from the other direction: are official estimates too reassuring?</span><span class="verdict"><b>~0.27 °C</b>per decade human-induced rate (IGCC); faster than before, debated how much</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: some scientists, notably James Hansen and colleagues, argue that climate sensitivity is about 4.5 °C, that cleaner air is unmasking more warming than assumed, and that warming has accelerated to around 0.3–0.4 °C per decade<sup class="ref"><a href="#r22">22</a></sup>. The 2023–2024 jump is presented as evidence.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>The human-induced warming rate has increased, to about 0.27 °C per decade over the last ten years<sup class="ref"><a href="#r1">1</a></sup>, up from about 0.18 °C per decade in the 1980s–2000s.</li>
+            <li>Earth's energy imbalance roughly doubled between the mid-2000s and early 2020s<sup class="ref"><a href="#r29">29</a></sup>.</li>
+            <li>2023 had unusually low reflectivity; low clouds decreased and the planet absorbed about 1 W/m² more energy than the prior 20-year average<sup class="ref"><a href="#r13">13</a></sup>.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>Much of the 2023–2024 jump is explained by El Niño, Indian Ocean and Atlantic variability, the solar maximum and shipping fuel rules, with modest unexplained residual<sup class="ref"><a href="#r12">12</a></sup><sup class="ref"><a href="#r27">27</a></sup>.</li>
+            <li>An acceleration of this size is within what mainstream models projected once falling aerosol pollution is included.</li>
+            <li>Whether the cloud decrease is a lasting feedback or temporary variability is not yet known.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>Warming has sped up, consistent with rising greenhouse forcing plus declining aerosol cooling. Whether sensitivity is in the upper part of the IPCC range is an open question that the next decade of data should help settle.</span></div>
+      </div>
+    </details>
+
+    <details class="hyp" id="h-worst">
+      <summary><h3>“We are on track for the worst-case scenario”</h3><span class="q">Another claim from the other direction: is 4–5 °C by 2100 the expected outcome?</span><span class="verdict"><b>~2.8 °C</b>by 2100 with current policies (UNEP 2025)</span></summary>
+      <div class="hyp-body">
+        <p class="hyp-claim">The claim: the high-emissions scenario (SSP5-8.5, or the older RCP8.5) is "business as usual", so 4–5 °C of warming this century is where we are headed.</p>
+        <div class="hyp-cols">
+          <div><h4>Evidence for</h4><ul>
+            <li>Global emissions have not yet started a sustained decline.</li>
+            <li>Carbon-cycle feedbacks (thawing permafrost, weakening land and ocean sinks) could add warming beyond central estimates.</li>
+            <li>High-sensitivity outcomes cannot be ruled out, and they would push moderate emissions toward higher warming.</li>
+          </ul></div>
+          <div><h4>Evidence against</h4><ul>
+            <li>SSP5-8.5 assumes a large expansion of coal use that energy trends no longer support; analysts consider it unlikely as a baseline<sup class="ref"><a href="#r26">26</a></sup>.</li>
+            <li>Cheap solar, wind and batteries have bent energy projections downward over the past decade.</li>
+            <li>Current-policy projections are near 2.8 °C by 2100, and 2.3–2.5 °C if national pledges are fully delivered<sup class="ref"><a href="#r14">14</a></sup>.</li>
+          </ul></div>
+        </div>
+        <div class="hyp-est"><strong>Current best estimate</strong><span>The most likely path on current policies lies between the middle scenarios SSP2-4.5 and SSP3-7.0 (about 2.5–3 °C by 2100), with real uncertainty from future policy, technology and the climate system's response.</span></div>
+      </div>
+    </details>
+  </div>
+</div></section>
+
+<!-- 7. OCEANS & ICE -->
+<section class="chapter gutter" id="oceans"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 7 · Other measures of change</div>
+    <h2>Rising seas and a warming ocean</h2>
+    <p class="lede">Surface temperature is one gauge. More than 90% of the extra heat goes into the ocean, and sea level integrates both ocean warming (water expands) and melting land ice. These are slow, steady indicators with little year-to-year noise.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>Global mean sea level</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Centimetres relative to the 1995–2014 average; shading is ±1 standard deviation</div></div></div>
+      <div id="chart-sea"></div>
+      <p class="cap">Before 1993 the global average is reconstructed from a few hundred unevenly spread tide gauges, hence the wider band. From 1993 satellites measure it almost globally. The rate has roughly tripled, from about 1.3 mm per year in 1901–1971 to over 4 mm per year in the last decade<sup class="ref"><a href="#r1">1</a></sup><sup class="ref"><a href="#r2">2</a></sup>.</p>
+    </div>
+    <div class="figure">
+      <div class="figure-head"><div><h3>Heat stored in the ocean</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Zettajoules (10²¹ J) gained since 1971, full depth</div></div></div>
+      <div id="chart-ohc2"></div>
+      <p class="cap">Before the mid-2000s the deep ocean was sampled sparsely by ships, so early values partly rely on gap-filling; since then about 4,000 Argo floats measure it routinely. Shading is the uncertainty. Data: IGCC 2025 (von Schuckmann, Palmer)<sup class="ref"><a href="#r1">1</a></sup>.</p>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact"><h4>Arctic sea ice</h4><p>September Arctic sea-ice extent has declined about 12–13% per decade since satellite records began in 1979. Summer ice is thinner and younger.</p></div>
+    <div class="fact"><h4>Glaciers and ice sheets</h4><p>Glaciers worldwide and the Greenland and Antarctic ice sheets have been losing mass, now contributing more to sea-level rise than ocean expansion.</p></div>
+    <div class="fact"><h4>Extremes</h4><p>Hot extremes have become more frequent and intense over most land regions; the IPCC finds human influence is the main driver of this. Evidence for changes in droughts and storms is more mixed and varies by region<sup class="ref"><a href="#r2">2</a></sup>.</p></div>
+  </div>
+</div></section>
+
+<!-- 8. FUTURE -->
+<section class="chapter gutter" id="future"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 8 · What may come</div>
+    <h2>Future warming depends mostly on future emissions</h2>
+    <p class="lede">Projections are not predictions of what people will choose. They are "if-then" statements: if emissions follow a given path, then warming is likely to fall in a given range. The range within each path reflects uncertainty in the climate's response.</p>
+  </div>
+  <div class="figure">
+    <div class="figure-head">
+      <div><h3>Projected global warming by scenario</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">20-year averages, °C relative to 1850–1900; shading is the very likely (5–95%) range</div></div>
+    </div>
+    <div class="scen-chips controls" id="scen-chips"></div>
+    <div id="chart-future"></div>
+    <div class="scen-detail" id="scen-detail"></div>
+    <p class="cap">Projections: IPCC AR6 assessed ranges for 2021–2040, 2041–2060 and 2081–2100, plotted at the middle of each period<sup class="ref"><a href="#r2">2</a></sup>. Lines between periods are drawn straight for readability. The starting point is the IGCC estimate of human-induced warming for the last decade<sup class="ref"><a href="#r1">1</a></sup>.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>Where do today's policies point?</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">Warming around 2100, °C relative to 1850–1900</div></div></div>
+      <div id="chart-policy"></div>
+      <p class="cap">Scenario values: IPCC AR6 (2081–2100). Policy estimates: UNEP Emissions Gap Report 2025<sup class="ref"><a href="#r14">14</a></sup>, central values; independent trackers give similar numbers.</p>
+    </div>
+    <div class="figure">
+      <div class="figure-head"><div><h3>What each level of warming means for extremes</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">Compared with the 1850–1900 climate (IPCC AR6, Figure SPM.6)</div></div></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Global warming</th><th>Once-a-decade heat extreme</th><th>Once-a-decade heavy rain</th><th>Once-a-decade farm drought</th></tr></thead>
+        <tbody>
+          <tr><td class="n">+1 °C (about 2010s)</td><td class="n">2.8× as often, 1.2 °C hotter</td><td class="n">1.3× as often, 6.7% wetter</td><td class="n">1.7× as often</td></tr>
+          <tr><td class="n">+1.5 °C</td><td class="n">4.1×, 1.9 °C hotter</td><td class="n">1.5×, 10.5% wetter</td><td class="n">2.0×</td></tr>
+          <tr><td class="n">+2 °C</td><td class="n">5.6×, 2.6 °C hotter</td><td class="n">1.7×, 14.0% wetter</td><td class="n">2.4×</td></tr>
+          <tr><td class="n">+4 °C</td><td class="n">9.4×, 5.1 °C hotter</td><td class="n">2.7×, 30.2% wetter</td><td class="n">4.1×</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">Median global changes; drought refers to drying-affected regions. Regional changes vary widely<sup class="ref"><a href="#r2">2</a></sup>.</p>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact"><h4>Warming stops rising when CO₂ emissions reach net zero</h4><p>Temperature is closely tied to the total CO₂ emitted. Once emissions reach net zero, warming is expected to roughly level off, though sea level keeps rising for centuries.</p></div>
+    <div class="fact"><h4>Low-probability, high-impact outcomes</h4><p>Ice-sheet instability could push sea-level rise toward 2 m by 2100 in a high-emissions world; this cannot be ruled out but is not the central estimate. A slowdown of the Atlantic overturning circulation is likely this century; an abrupt collapse is considered unlikely before 2100 but is debated<sup class="ref"><a href="#r2">2</a></sup>.</p></div>
+    <div class="fact"><h4>The next few years</h4><p>With a strong El Niño under way in late 2026<sup class="ref"><a href="#r15">15</a></sup>, 2027 has a high chance of setting a new annual record. A single record year says more about El Niño than about the long-term rate.</p></div>
+  </div>
+</div></section>
+
+<!-- 9. BOTTOM LINE -->
+<section class="chapter gutter" id="bottom-line"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Chapter 9 · Summary</div>
+    <h2>What we know, what's likely, and what's uncertain</h2>
+  </div>
+  <div class="ladder">
+    <div class="rung"><h3><span class="dots">●●●</span> Very well established</h3><ul>
+      <li>The world has warmed about <span class="num" id="bl-warm">1.3–1.4</span> °C since 1850–1900; independent records agree.</li>
+      <li>The rise in CO₂ is from human activity.</li>
+      <li>Greenhouse gases trap heat; this is laboratory physics, measured from space and the ground.</li>
+      <li>Most of the warming since 1950 is human-caused. Best estimates put the human share at roughly all of it, with natural factors close to zero net.</li>
+      <li>The oceans are gaining heat and sea level is rising faster.</li>
+    </ul></div>
+    <div class="rung"><h3><span class="dots">●●○</span> Likely, with a range</h3><ul>
+      <li>Doubling CO₂ brings about 2.5–4 °C of eventual warming.</li>
+      <li>Current policies point to roughly 2.5–3 °C by 2100.</li>
+      <li>Aerosol pollution has hidden roughly 0.3–0.5 °C of warming; cleaner air reveals some of it.</li>
+      <li>Hot extremes will keep becoming more frequent with each increment of warming.</li>
+    </ul></div>
+    <div class="rung"><h3><span class="dots">●○○</span> Genuinely uncertain</h3><ul>
+      <li>Exactly how strong aerosol cooling and cloud feedbacks are.</li>
+      <li>How much of the 2023–2024 jump reflects a lasting change.</li>
+      <li>Timing and likelihood of tipping points (ice sheets, Atlantic circulation, permafrost).</li>
+      <li>How large and fast natural swings were before thermometers, since reconstructions smooth out short-term variability.</li>
+      <li>Regional details, such as rainfall changes in many places.</li>
+      <li>Future emissions, which depend on policy, technology and economics rather than physics.</li>
+    </ul></div>
+  </div>
+  <div class="callout"><strong>What would change this picture?</strong> A sustained decline in ocean heat content while greenhouse gases keep rising; a stratosphere that stopped cooling; measured solar output rising enough to match the warming; or warming that stalled for several decades despite rising forcing. None of these has been observed, but they are the observations a scientist would look for.</div>
+</div></section>
+
+<!-- 10. DATA -->
+<section class="chapter gutter" id="data"><div class="col" style="display:grid;gap:24px">
+  <div class="chapter-head">
+    <div class="eyebrow">Sources</div>
+    <h2>Data status and references</h2>
+    <p class="lede">The page tries to fetch each dataset from its source as it loads. If a source cannot be reached from your browser (some data providers do not allow cross-site requests, and some viewers block outside requests), the page uses a saved copy and labels it. Saved copies are refreshed weekly by an automated job in the project repository.</p>
+  </div>
+  <div class="table-wrap"><table id="data-table">
+    <thead><tr><th>Dataset</th><th>Kind</th><th>Provider</th><th>Latest value</th><th>Status</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <ol class="refs">
+    <li id="r1">Forster, P. M. et al. Indicators of Global Climate Change 2025 (IGCC), submitted to Earth System Science Data, 2026; data at github.com/ClimateIndicator. Earlier editions: ESSD 2023, 2024, 2025.</li>
+    <li id="r2">IPCC, 2021: Climate Change 2021: The Physical Science Basis, Summary for Policymakers and Chapters 2, 4, 7 and 9. Cambridge University Press.</li>
+    <li id="r3">GISTEMP Team: GISS Surface Temperature Analysis v4, NASA Goddard Institute for Space Studies; Lenssen et al., JGR Atmospheres, 2019.</li>
+    <li id="r4">Morice, C. P. et al. An updated assessment of near-surface temperature change from 1850: the HadCRUT5 data set. JGR Atmospheres, 2021.</li>
+    <li id="r5">Rohde, R. A. and Hausfather, Z. The Berkeley Earth Land/Ocean Temperature Record. Earth System Science Data, 2020.</li>
+    <li id="r6">Lan, X., Tans, P. and Thoning, K. W. Trends in atmospheric CO₂, NOAA Global Monitoring Laboratory; Keeling, C. D. et al., Scripps Institution of Oceanography.</li>
+    <li id="r7">Millán, L. et al. The Hunga Tonga-Hunga Ha'apai hydration of the stratosphere. Geophysical Research Letters, 2022.</li>
+    <li id="r8">Gupta, A. K. et al. The January 2022 Hunga eruption cooled the southern hemisphere in 2022 and 2023. Communications Earth &amp; Environment 6, 240, 2025.</li>
+    <li id="r9">Quaglia, I. et al. Multi-model analysis of the impact of water vapor on the radiative forcing of volcanic aerosols after the 2022 Hunga eruption. Atmospheric Chemistry and Physics 26, 7677–7704, 2026.</li>
+    <li id="r10">Schoeberl, M. R. et al. The estimated climate impact of the Hunga Tonga-Hunga Ha'apai eruption plume. Geophysical Research Letters, 2024.</li>
+    <li id="r11">Jenkins, S. et al. Tonga eruption increases chance of temporary surface temperature anomaly above 1.5 °C. Nature Climate Change, 2023.</li>
+    <li id="r12">Farago, E. Z. et al. Quantification of the influence of anthropogenic and natural factors on the record-high temperatures in 2023 and 2024. Earth System Dynamics 17, 451–474, 2026.</li>
+    <li id="r13">Goessling, H. F., Rackow, T. and Jung, T. Recent global temperature surge intensified by record-low planetary albedo. Science, 2025.</li>
+    <li id="r14">UNEP. Emissions Gap Report 2025: Off Target. United Nations Environment Programme, 2025.</li>
+    <li id="r15">NOAA Climate Prediction Center. ENSO Diagnostic Discussion, October 2026 (El Niño Advisory).</li>
+    <li id="r16">Kirkby, J. et al. Role of sulphuric acid, ammonia and galactic cosmic rays in atmospheric aerosol nucleation. Nature, 2011; Dunne, E. M. et al., Science, 2016.</li>
+    <li id="r17">Feldman, D. R. et al. Observational determination of surface radiative forcing by CO₂ from 2000 to 2010. Nature, 2015.</li>
+    <li id="r18">Lewis, N. and Curry, J. The impact of recent forcing and ocean heat uptake data on estimates of climate sensitivity. Journal of Climate, 2018; Lewis, N. Objectively combining climate sensitivity evidence. Climate Dynamics, 2023.</li>
+    <li id="r19">Sherwood, S. C. et al. An assessment of Earth's climate sensitivity using multiple lines of evidence. Reviews of Geophysics, 2020.</li>
+    <li id="r20">Hausfather, Z. et al. Climate simulations: recognize the 'hot model' problem. Nature, 2022.</li>
+    <li id="r21">Connolly, R. et al. How much has the Sun influenced Northern Hemisphere temperature trends? Research in Astronomy and Astrophysics, 2021; Soon, W. et al., Climate, 2023.</li>
+    <li id="r22">Hansen, J. E. et al. Global warming has accelerated. Environment: Science and Policy for Sustainable Development, 2025.</li>
+    <li id="r23">Neukom, R. et al. No evidence for globally coherent warm and cold periods over the preindustrial Common Era. Nature, 2019; PAGES 2k Consortium, Nature Geoscience, 2019.</li>
+    <li id="r24">Gerlach, T. Volcanic versus anthropogenic carbon dioxide. Eos, 2011; USGS Volcano Hazards Program.</li>
+    <li id="r25">Ganopolski, A., Winkelmann, R. and Schellnhuber, H. J. Critical insolation–CO₂ relation for diagnosing past and future glacial inception. Nature, 2016.</li>
+    <li id="r26">Hausfather, Z. and Peters, G. P. Emissions: the 'business as usual' story is misleading. Nature, 2020.</li>
+    <li id="r27">Raghuraman, S. P. et al. The 2023 global warming spike was driven by the El Niño–Southern Oscillation. Atmospheric Chemistry and Physics, 2024.</li>
+    <li id="r28">Tierney, J. E. et al. Glacial cooling and climate sensitivity revisited. Nature, 2020.</li>
+    <li id="r29">Loeb, N. G. et al. Satellite and ocean data reveal marked increase in Earth's heating rate. Geophysical Research Letters, 2021.</li>
+    <li id="r30">Hausfather, Z. Explainer: How data adjustments affect global temperature records. Carbon Brief, 2017; Karl, T. R. et al., Science, 2015.</li>
+    <li id="r31">Santer, B. D. et al. Exceptional stratospheric contribution to human fingerprints on atmospheric temperature. PNAS, 2023.</li>
+    <li id="r32">Graven, H. et al. Changes to carbon isotopes in atmospheric CO₂ over the industrial era and into the future. Global Biogeochemical Cycles, 2020; Keeling, R. F., Scripps O₂ Program.</li>
+    <li id="r33">Marcott, S. A. et al. A reconstruction of regional and global temperature for the past 11,300 years. Science, 2013.</li>
+  </ol>
+</div></section>
+</main>
+
+<footer class="gutter"><div class="col">Built from public data by an automated assistant for a general audience. Figures round published values; check the cited sources for precise numbers and methods. Source code and data pipeline: github.com/jonhill7/climate-change.</div></footer>
+
+<script src="data/snapshot.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
