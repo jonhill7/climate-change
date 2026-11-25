@@ -69,7 +69,7 @@ def main(out):
     for line in t["berkeley"].splitlines():
         p = line.split()
         if p and not line.startswith("%") and p[0].isdigit() and num(p[1]) is not None:
-            be.append([int(p[0]), r(num(p[1]))])
+            be.append([int(p[0]), r(num(p[1])), r(num(p[2]))])
     snap["berkeley"] = be
 
     # CO2 at Mauna Loa (monthly)

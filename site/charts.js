@@ -137,7 +137,8 @@
       const plot = el("g", { "clip-path": `url(#${clipId})` }, svg);
 
       (o.shading || []).forEach((s) => {
-        el("rect", { x: sx(s.x0), y: m.top, width: Math.max(1, sx(s.x1) - sx(s.x0)), height: ih, class: "viz-shade" }, plot);
+        const x0 = sx(Math.max(xd[0], s.x0)), x1 = sx(Math.min(xd[1], s.x1));
+        el("rect", { x: x0, y: m.top, width: Math.max(1, x1 - x0), height: ih, class: "viz-shade" }, plot);
       });
       vis.forEach((s) => {
         if (s.band) el("path", { d: bandPath(s.band, sx, sy), style: `fill:${s.color};opacity:${s.bandOpacity ?? 0.16}` }, plot);
@@ -151,6 +152,13 @@
           el("path", { d: pathOf(s.data, sx, sy), class: "viz-line", style: `stroke:${s.color};stroke-width:${s.width || 2}px;${s.dash ? "stroke-dasharray:" + s.dash : ""};opacity:${s.opacity ?? 1}` }, plot);
           if (s.dots) s.data.forEach((p) => p[1] !== null && el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: s.dots, style: `fill:${s.color}` }, plot));
         }
+      });
+      (o.shading || []).forEach((s) => {
+        if (!s.label) return;
+        const x0 = sx(Math.max(xd[0], s.x0)), x1 = sx(Math.min(xd[1], s.x1));
+        const t = el("text", { x: x0 + 5, y: m.top + ih - 6, class: "viz-shadelabel" }, svg);
+        t.textContent = f.narrow && s.short ? s.short : s.label;
+        if (t.getComputedTextLength && t.getComputedTextLength() > x1 - x0 - 8) t.textContent = s.short || "";
       });
       (o.refLines || []).forEach((r) => {
         if (r.y < yd[0] || r.y > yd[1]) return;

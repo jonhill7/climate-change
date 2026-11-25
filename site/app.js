@@ -43,6 +43,7 @@
       gistemp: D.gistemp.map((p) => [p[0], p[1] + oG]),
       hadcrut: D.hadcrut.map((p) => [p[0], p[1] + oH]),
       berkeley: D.berkeley.map((p) => [p[0], p[1] + oB]),
+      berkeleyBand: D.berkeley.filter((p) => p[2] !== null && p[2] !== undefined).map((p) => [p[0], p[1] + oB - p[2], p[1] + oB + p[2]]),
       hadMonthly: D.hadcrut_monthly.map((p) => [monthToX(p[0]), p[1] + oH]),
       gisMonthly: D.gistemp_monthly.map((p) => [monthToX(p[0]), p[1] + oG]),
     };
@@ -68,7 +69,7 @@
 
   // ---------- Chart registry ----------
   const C = {};
-  const ui = { recSmooth: 0, recMarks: "enso", recHidden: new Set(), co2: "ml", attrMethod: "walsh", attrHidden: new Set(), erfHidden: new Set(), scen: new Set(["ssp119", "ssp126", "ssp245", "ssp370", "ssp585"]), focus: "ssp245" };
+  const ui = { resWin: 1, recSmooth: 0, recMarks: "enso", recHidden: new Set(), co2: "ml", attrMethod: "walsh", attrHidden: new Set(), erfHidden: new Set(), scen: new Set(["ssp119", "ssp126", "ssp245", "ssp370", "ssp585"]), focus: "ssp245" };
   const mk = (id, Kind, opts) => { if (C[id]) C[id].update(opts); else C[id] = Kind($("#" + id), opts); };
 
   const REC_SERIES = [
@@ -87,7 +88,8 @@
       ariaLabel: "Global temperature anomaly 1850 to present from four datasets",
       x: { min: 1850, max: endYear + 1, snap: 1.5 },
       y: { format: (v) => (v > 0 ? "+" : "") + v.toFixed(1), tipFormat: (v) => f2(v) + " °C", label: "°C" },
-      series: REC_SERIES.map((s) => ({ ...s, data: ui.recSmooth ? runMean(T[s.id], 10) : T[s.id], hidden: ui.recHidden.has(s.id), opacity: s.id === "igcc" ? 1 : 0.85 })),
+      series: REC_SERIES.map((s) => ({ ...s, data: ui.recSmooth ? runMean(T[s.id], 10) : T[s.id], hidden: ui.recHidden.has(s.id), opacity: s.id === "igcc" ? 1 : 0.85,
+        band: s.id === "berkeley" && !ui.recSmooth && T.berkeleyBand.length ? T.berkeleyBand : undefined, bandOpacity: 0.22 })),
       refLines: [{ y: 1.5, label: "1.5 °C" }],
       markers: ui.recMarks === "enso" ? ENSO_MARKS : ui.recMarks === "volc" ? VOLC_MARKS : [],
     });
@@ -117,10 +119,50 @@
         { id: "had", name: "HadCRUT5", color: col("s2"), data: had, width: 1.6, endDot: true },
         { id: "gis", name: "NASA GISTEMP", color: col("s1"), data: gis, width: 1.6, endDot: true },
       ],
-      refLines: [{ y: 1.5, label: "1.5 °C" }],
+      refLines: [{ y: 1.5, label: "1.5 °C", right: true }],
     });
+    const be = D.berkeley.filter((p) => p[2] !== null && p[2] !== undefined);
+    if (be.length > 20) {
+      setText("#be-unc-early", "±" + mean(be.slice(0, 10).map((p) => p[2])).toFixed(2));
+      setText("#be-unc-late", "±" + mean(be.slice(-10).map((p) => p[2])).toFixed(2));
+    }
+    drawResolution();
     const lh = lastOf(D.hadcrut_monthly);
     setText("#monthly-cap", `Individual months bounce around by a few tenths of a degree, largely because of El Niño and La Niña in the Pacific. Latest HadCRUT5 month: ${ymLabel(monthToX(lh[0]))}, ${f2(lastOf(had)[1])} °C.`);
+  }
+
+  function drawResolution() {
+    const T = D.igcc_gmst, w = ui.resWin || 1;
+    const end = lastOf(T)[0];
+    $$(".be-end").forEach((n) => (n.textContent = String(end)));
+    const blocks = [];
+    if (w > 1) {
+      for (let hi = end; hi >= T[0][0]; hi -= w) {
+        const lo = Math.max(T[0][0], hi - w + 1);
+        const vals = T.filter((p) => p[0] >= lo && p[0] <= hi).map((p) => p[1]);
+        if (vals.length) blocks.unshift({ lo, hi, v: mean(vals) });
+      }
+    }
+    const step = [];
+    blocks.forEach((b) => { step.push([b.lo, b.v], [b.hi + 1, b.v]); });
+    mk("chart-res", Viz.LineChart, {
+      ariaLabel: "Modern temperature record averaged at different resolutions",
+      height: (wd) => (wd < 520 ? 240 : 290),
+      x: { min: T[0][0], max: end + 1, snap: 1.5 },
+      y: { min: -0.4, max: 1.7, format: (v) => (v > 0 ? "+" : "") + v.toFixed(1), tipFormat: (v) => f2(v) + " °C", label: "°C" },
+      series: [
+        { id: "yr", name: "Measured yearly values", color: col("fg-3"), data: T, width: 1, opacity: w > 1 ? 0.45 : 1 },
+        ...(w > 1 ? [{ id: "blk", name: `${w >= T.length ? "Whole-record" : w + "-year"} average`, color: col("k-rec"), data: step, width: 3 }] : []),
+      ],
+      refLines: [{ y: 1.5, label: "1.5 °C" }],
+    });
+    const top = Math.max(...T.map((p) => p[1]));
+    const cap = $("#res-cap");
+    if (w <= 1) cap.textContent = `Each year as measured. The warmest single year reached ${f2(top)} °C. Pick a wider window to see what a lower-resolution record would keep.`;
+    else {
+      const last = lastOf(blocks), peak = Math.max(...blocks.map((b) => b.v));
+      cap.textContent = `Averaged over ${w >= T.length ? "the whole " + T.length + "-year record" : w + "-year blocks"}, the highest value is ${f2(peak)} °C, against ${f2(top)} °C for the warmest single year. ${w >= 100 ? "Most of the modern rise is averaged away, which is how a real warming of this length could look muted in a record that blends centuries." : "Year-to-year swings such as El Niño disappear, but the trend remains."}`;
+    }
   }
 
   function drawPaleo() {
@@ -130,12 +172,12 @@
       noBars: true, labelWidth: 250, rangeLabel: "Assessed range",
       x: { min: -8, max: 4, format: (v) => (v > 0 ? "+" : "") + v, tipFormat: (v) => f1(v) + " °C" },
       rows: [
-        { label: "Last ice age peak, ~21,000 yrs ago", mid: -6, lo: -7, hi: -5, color: col("cool"), note: "IPCC AR6; Tierney et al. 2020 estimate −6.1 °C." },
-        { label: "Holocene warmest, ~6,500 yrs ago", mid: 0.6, lo: 0.2, hi: 1.0, color: col("s3"), note: "AR6 gives a range only (0.2 to 1 °C); the dot marks its midpoint." },
-        { label: "Last interglacial, ~125,000 yrs ago", mid: 1.0, lo: 0.5, hi: 1.5, color: col("s3"), note: "AR6 range 0.5 to 1.5 °C; midpoint shown. Sea level was 5–10 m higher." },
-        { label: "Mid-Pliocene, ~3.2 million yrs ago", mid: 3.25, lo: 2.5, hi: 4.0, color: col("s4"), note: "AR6 range 2.5 to 4 °C, with CO₂ about 360–420 ppm. Midpoint shown." },
-        { label: `Last 10 years (${dec[0][0]}–${lastOf(dec)[0]})`, mid: recent, color: col("warm"), note: "Observed, IGCC composite." },
-        { label: "2081–2100, middle scenario", mid: 2.7, lo: 2.1, hi: 3.5, color: col("human"), note: "SSP2-4.5, IPCC AR6, very likely range." },
+        { label: "Last ice age peak, ~21,000 yrs ago", mid: -6, lo: -7, hi: -5, color: col("cool"), note: "Reconstructed. IPCC AR6; Tierney et al. 2020 estimate −6.1 °C. A multi-millennium average." },
+        { label: "Holocene warmest, ~6,500 yrs ago", mid: 0.6, lo: 0.2, hi: 1.0, color: col("s3"), note: "Reconstructed. AR6 gives a range only (0.2 to 1 °C); the dot marks its midpoint. Averages over centuries." },
+        { label: "Last interglacial, ~125,000 yrs ago", mid: 1.0, lo: 0.5, hi: 1.5, color: col("s3"), note: "Reconstructed. AR6 range 0.5 to 1.5 °C; midpoint shown. Sea level was 5–10 m higher." },
+        { label: "Mid-Pliocene, ~3.2 million yrs ago", mid: 3.25, lo: 2.5, hi: 4.0, color: col("s4"), note: "Reconstructed. AR6 range 2.5 to 4 °C, with CO₂ about 360–420 ppm. Midpoint shown." },
+        { label: `Last 10 years (${dec[0][0]}–${lastOf(dec)[0]})`, mid: recent, color: col("warm"), note: "Measured, IGCC composite. A 10-year average, much shorter than the averaging periods above." },
+        { label: "2081–2100, middle scenario", mid: 2.7, lo: 2.1, hi: 3.5, color: col("human"), note: "Projected. SSP2-4.5, IPCC AR6, very likely range." },
       ],
     });
   }
@@ -158,7 +200,11 @@
         ariaLabel: "CO2 since 1750",
         x: { min: 1750, max: lastOf(D.ghg_conc)[0] + 1, snap: 2 },
         y: { min: 260, max: 440, format: (v) => v, tipFormat: (v) => v.toFixed(1) + " ppm", label: "ppm" },
-        series: [{ id: "co2l", name: "CO₂ (ice cores and air)", color: col("ghg"), data: D.ghg_conc.map((p) => [p[0], p[1]]), width: 2, endDot: true }],
+        series: [
+          { id: "co2ice", name: "Ice cores (reconstructed, smoothed)", color: col("ghg"), data: D.ghg_conc.filter((p) => p[0] <= 1959).map((p) => [p[0], p[1]]), width: 2, dash: "5 4" },
+          { id: "co2air", name: "Direct air measurements", color: col("ghg"), data: D.ghg_conc.filter((p) => p[0] >= 1959).map((p) => [p[0], p[1]]), width: 2.4, endDot: true },
+        ],
+        shading: [{ x0: 1750, x1: 1958.5, label: "Ice-core air bubbles", short: "Ice cores" }],
         refLines: [{ y: 300, label: "Highest natural level in 800,000 years: ~300 ppm" }],
       });
     }
@@ -260,8 +306,10 @@
       y: { min: 1360, max: 1363, format: (v) => v.toFixed(1), tipFormat: (v) => v.toFixed(2) + " W/m²", label: "W/m²" },
       series: [
         { id: "tsi", name: "Yearly", color: col("s4"), data: tsi, width: 1, opacity: 0.7 },
-        { id: "tsi11", name: "11-year average", color: col("s3"), data: runMean(tsi, 11), width: 2.5 },
+        { id: "tsi11r", name: "11-year average (reconstructed)", color: col("s3"), data: runMean(tsi, 11).filter((p) => p[0] <= 1979), width: 2.5, dash: "5 4" },
+        { id: "tsi11", name: "11-year average (satellite era)", color: col("s3"), data: runMean(tsi, 11).filter((p) => p[0] >= 1979), width: 2.5 },
       ],
+      shading: [{ x0: 1850, x1: 1978.5, label: "Reconstructed from sunspots", short: "Reconstructed" }],
     });
     mk("chart-tsi-temp", Viz.LineChart, {
       ariaLabel: "Global temperature 10-year average",
@@ -275,6 +323,7 @@
       x: { min: 1850, max: lastOf(D.volcanic)[0] + 1, snap: 1.5 },
       y: { min: 0, format: (v) => v.toFixed(2), tipFormat: (v) => v.toFixed(3), label: "Aerosol optical depth" },
       series: [{ id: "aod", name: "Stratospheric haze", color: col("s7"), data: D.volcanic.map((r) => [r[0], r[1]]), width: 1.8, area: true }],
+      shading: [{ x0: 1850, x1: 1979, label: "Reconstructed from ice-core sulfate and records", short: "Reconstructed" }],
       markers: VOLC_MARKS.filter((m) => m.x !== 1902),
     });
     const ohc = D.ocean_heat;
@@ -283,6 +332,7 @@
       x: { min: 1971, max: lastOf(ohc)[0] + 1, snap: 1 },
       y: { min: -50, format: (v) => v, tipFormat: (v) => Math.round(v) + " ZJ", label: "ZJ" },
       series: [{ id, name: "Ocean heat gained", color: col("s1"), data: ohc.map((r) => [r[0], r[1]]), band: ohc.map((r) => [r[0], r[1] - r[2], r[1] + r[2]]), width: 2.2, endDot: true }],
+      shading: [{ x0: 1971, x1: 2005, label: "Sparse ship sampling", short: "Sparse" }],
     });
     mk("chart-ohc", Viz.LineChart, ohcOpts("ohc"));
     mk("chart-ohc2", Viz.LineChart, ohcOpts("ohc2"));
@@ -386,6 +436,7 @@
       x: { min: 1900, max: lastOf(sl)[0] + 1, snap: 1.5 },
       y: { format: (v) => (v > 0 ? "+" : "") + v, tipFormat: (v) => f1(v) + " cm", label: "cm" },
       series: [{ id: "sl", name: "Sea level", color: col("s1"), data: sl.map((r) => [r[0], r[1] / 10]), band: sl.map((r) => [r[0], (r[1] - r[2]) / 10, (r[1] + r[2]) / 10]), width: 2, endDot: true }],
+      shading: [{ x0: 1900, x1: 1993, label: "Reconstructed from tide gauges", short: "Tide gauges" }],
     });
   }
 
@@ -418,7 +469,7 @@
         })),
       ],
       refLines: [{ y: 1.5, label: "1.5 °C", right: true }, { y: 2, label: "2 °C", right: true }],
-      shading: [{ x0: 1950, x1: 2025.5 }],
+      shading: [{ x0: 1950, x1: 2025.5, label: "Measured", short: "Measured" }],
     });
     const box = $("#scen-chips");
     if (!box.childElementCount) {
@@ -489,21 +540,22 @@
 
   // ---------- Data status ----------
   const DATASETS = [
-    { key: "igcc", name: "Global temperature (composite)", provider: "Indicators of Global Climate Change", latest: () => { const p = lastOf(D.igcc_gmst); return `${p[0]}: ${f2(p[1])} °C`; } },
-    { key: "temps", name: "NASA GISTEMP v4", provider: "NASA GISS, via the datasets/global-temp mirror", latest: () => { const p = lastOf(D.gistemp_monthly); return `${ymLabel(monthToX(p[0]))}`; } },
-    { key: "temps", name: "HadCRUT5", provider: "Met Office Hadley Centre / UEA, via datasets/global-temp", latest: () => { const p = lastOf(D.hadcrut_monthly); return `${ymLabel(monthToX(p[0]))}`; } },
-    { key: "berkeley", name: "Berkeley Earth Land/Ocean", provider: "Berkeley Earth", latest: () => String(lastOf(D.berkeley)[0]) },
-    { key: "co2", name: "CO₂ at Mauna Loa", provider: "NOAA GML and Scripps", latest: () => { const c = D.co2_monthly[D.co2_monthly.length - 1]; return `${ymLabel(monthToX(c[0]))}: ${c[1].toFixed(2)} ppm`; } },
-    { key: "erf", name: "Radiative forcing, emissions, concentrations", provider: "IGCC (Smith, Forster et al.)", latest: () => String(lastOf(D.erf.year)) },
-    { key: "attr", name: "Attribution of warming", provider: "IGCC (Walsh, Gillett, Ribes)", latest: () => `${headline().year}: ${f2(headline().ant[1])} °C human-induced` },
-    { key: "sea", name: "Global mean sea level", provider: "IGCC (Slangen, Palmer)", latest: () => String(lastOf(D.sea_level)[0]) },
-    { key: "ocean", name: "Ocean heat content", provider: "IGCC (Palmer, von Schuckmann)", latest: () => String(lastOf(D.ocean_heat)[0]) },
-    { key: "tsi", name: "Solar irradiance and volcanic aerosol", provider: "IGCC forcing time series", latest: () => String(lastOf(D.tsi)[0]) },
-    { key: "fixed", name: "Projections, paleoclimate ranges, extremes", provider: "IPCC AR6 (2021), UNEP (2025)", latest: () => "Published assessments" },
+    { key: "igcc", name: "Global temperature (composite)", kinds: ["obs"], provider: "Indicators of Global Climate Change", latest: () => { const p = lastOf(D.igcc_gmst); return `${p[0]}: ${f2(p[1])} °C`; } },
+    { key: "temps", name: "NASA GISTEMP v4", kinds: ["obs"], provider: "NASA GISS, via the datasets/global-temp mirror", latest: () => { const p = lastOf(D.gistemp_monthly); return `${ymLabel(monthToX(p[0]))}`; } },
+    { key: "temps", name: "HadCRUT5", kinds: ["obs"], provider: "Met Office Hadley Centre / UEA, via datasets/global-temp", latest: () => { const p = lastOf(D.hadcrut_monthly); return `${ymLabel(monthToX(p[0]))}`; } },
+    { key: "berkeley", name: "Berkeley Earth Land/Ocean", kinds: ["obs"], provider: "Berkeley Earth", latest: () => String(lastOf(D.berkeley)[0]) },
+    { key: "co2", name: "CO₂ at Mauna Loa", kinds: ["obs"], provider: "NOAA GML and Scripps", latest: () => { const c = D.co2_monthly[D.co2_monthly.length - 1]; return `${ymLabel(monthToX(c[0]))}: ${c[1].toFixed(2)} ppm`; } },
+    { key: "erf", name: "Radiative forcing, emissions, concentrations", kinds: ["est", "rec", "obs"], provider: "IGCC (Smith, Forster et al.)", latest: () => String(lastOf(D.erf.year)) },
+    { key: "attr", name: "Attribution of warming", kinds: ["est"], provider: "IGCC (Walsh, Gillett, Ribes)", latest: () => `${headline().year}: ${f2(headline().ant[1])} °C human-induced` },
+    { key: "sea", name: "Global mean sea level", kinds: ["obs", "rec"], provider: "IGCC (Slangen, Palmer)", latest: () => String(lastOf(D.sea_level)[0]) },
+    { key: "ocean", name: "Ocean heat content", kinds: ["obs", "rec"], provider: "IGCC (Palmer, von Schuckmann)", latest: () => String(lastOf(D.ocean_heat)[0]) },
+    { key: "tsi", name: "Solar irradiance and volcanic aerosol", kinds: ["obs", "rec"], provider: "IGCC forcing time series", latest: () => String(lastOf(D.tsi)[0]) },
+    { key: "fixed", name: "Projections, paleoclimate ranges, extremes", kinds: ["proj", "rec"], provider: "IPCC AR6 (2021), UNEP (2025)", latest: () => "Published assessments" },
   ];
+  const KIND = { obs: '<span class="kind obs">Measured</span>', rec: '<span class="kind rec">Reconstructed</span>', est: '<span class="kind est">Estimated</span>', proj: '<span class="kind proj">Projected</span>' };
   function drawStatus() {
     const chip = (st) => (st === "live" ? '<span class="chip live">live</span>' : st === "snap" ? `<span class="chip snap">snapshot ${S.built}</span>` : '<span class="chip">published values</span>');
-    $("#data-table tbody").innerHTML = DATASETS.map((d) => `<tr><td>${d.name}</td><td>${d.provider}</td><td class="n">${d.latest()}</td><td>${chip(status[d.key] || "fixed")}</td></tr>`).join("");
+    $("#data-table tbody").innerHTML = DATASETS.map((d) => `<tr><td>${d.name}</td><td><div class="kind-row">${(d.kinds || []).map((k) => KIND[k]).join("")}</div></td><td>${d.provider}</td><td class="n">${d.latest()}</td><td>${chip(status[d.key] || "fixed")}</td></tr>`).join("");
     const map = { igcc: "igcc", co2: "co2", attr: "attr", sea: "sea" };
     $$("[data-status]").forEach((n) => {
       const st = status[map[n.dataset.status]];
@@ -557,7 +609,7 @@
       Object.assign(D, { gistemp: gis, hadcrut: had, hadcrut_monthly: hm, gistemp_monthly: gm.length ? gm : D.gistemp_monthly });
     } },
     { key: "berkeley", run: async () => {
-      const rows = (await get(S.sources.berkeley)).split(/\r?\n/).filter((l) => /^\s*\d{4}\s/.test(l)).map((l) => l.trim().split(/\s+/)).filter((p) => num(p[1]) !== null).map((p) => [parseInt(p[0], 10), num(p[1])]);
+      const rows = (await get(S.sources.berkeley)).split(/\r?\n/).filter((l) => /^\s*\d{4}\s/.test(l)).map((l) => l.trim().split(/\s+/)).filter((p) => num(p[1]) !== null).map((p) => [parseInt(p[0], 10), num(p[1]), num(p[2])]);
       if (!ok(rows, 150)) throw new Error("short");
       D.berkeley = rows;
     } },
@@ -631,6 +683,7 @@
   }
   seg("rec-smooth", (v) => { ui.recSmooth = +v; drawRecord(); });
   seg("rec-marks", (v) => { ui.recMarks = v; drawRecord(); });
+  seg("res-win", (v) => { ui.resWin = +v; drawResolution(); });
   seg("co2-range", (v) => { ui.co2 = v; drawCO2(); });
   seg("attr-method", (v) => { ui.attrMethod = v; drawAttribution(); });
 

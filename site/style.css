@@ -24,13 +24,14 @@
   --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --radius: 10px;
+  --k-obs: #0b6e74; --k-rec: #8a5a00; --k-est: #5b4bb7; --k-proj: #a2361f;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #101316; --surface: #171b1f; --surface-2: #1e2328; --fg: #e9edf1; --fg-2: #b3bcc6; --fg-3: #8a949f; --line: #2c333a;
     --accent: #3fb8be; --accent-ink: #061314; --warm: #f0615c; --cool: #5b9ff0;
     --s1: #338ced; --s2: #e76624; --s3: #00a888; --s4: #d28e05; --s5: #e24d8b; --s6: #0aac23; --s7: #9887ef; --s8: #eb6263;
-    --human: #f07a3a; --natural: #4f9cf0; --ghg: #e0606b; --aerosol: #94a3b3; --obs: #e9edf1; --good: #3cc35a; --caution: #e0a23a;
+    --k-obs: #4cc3c9; --k-rec: #e0a84a; --k-est: #a99cf2; --k-proj: #f08a6e; --human: #f07a3a; --natural: #4f9cf0; --ghg: #e0606b; --aerosol: #94a3b3; --obs: #e9edf1; --good: #3cc35a; --caution: #e0a23a;
     color-scheme: dark;
   }
 }
@@ -38,7 +39,7 @@
   --bg: #101316; --surface: #171b1f; --surface-2: #1e2328; --fg: #e9edf1; --fg-2: #b3bcc6; --fg-3: #8a949f; --line: #2c333a;
   --accent: #3fb8be; --accent-ink: #061314; --warm: #f0615c; --cool: #5b9ff0;
   --s1: #338ced; --s2: #e76624; --s3: #00a888; --s4: #d28e05; --s5: #e24d8b; --s6: #0aac23; --s7: #9887ef; --s8: #eb6263;
-  --human: #f07a3a; --natural: #4f9cf0; --ghg: #e0606b; --aerosol: #94a3b3; --obs: #e9edf1; --good: #3cc35a; --caution: #e0a23a;
+  --k-obs: #4cc3c9; --k-rec: #e0a84a; --k-est: #a99cf2; --k-proj: #f08a6e; --human: #f07a3a; --natural: #4f9cf0; --ghg: #e0606b; --aerosol: #94a3b3; --obs: #e9edf1; --good: #3cc35a; --caution: #e0a23a;
   color-scheme: dark;
 }
 
@@ -207,7 +208,7 @@ footer { padding-block: 40px 60px; color: var(--fg-3); font-size: 0.85rem; borde
 .viz-marker { stroke: var(--fg-3); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.8; }
 .viz-markerlabel { fill: var(--fg-3); font-family: var(--font-body); font-size: 10.5px; }
 .viz-directlabel { fill: var(--fg-2); font-family: var(--font-body); font-size: 11.5px; font-weight: 600; }
-.viz-shade { fill: var(--surface-2); }
+.viz-shade { fill: var(--surface-2); opacity: 0.6; }
 .viz-cross { stroke: var(--fg-3); stroke-width: 1; }
 .viz-hoverdot, .viz-enddot { stroke: var(--surface); stroke-width: 2px; }
 .viz-whisker { stroke: var(--fg); stroke-width: 1.5; }
@@ -225,3 +226,26 @@ footer { padding-block: 40px 60px; color: var(--fg-3); font-size: 0.85rem; borde
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
 .legend i.box { height: 10px; width: 10px; border-radius: 3px; }
+
+/* Evidence kinds */
+.kind { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 7px; border-radius: 4px; border: 1px solid currentColor; vertical-align: middle; line-height: 1.6; white-space: nowrap; width: fit-content; justify-self: start; }
+.kind::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
+.kind.obs { color: var(--k-obs); }
+.kind.obs::before { background: currentColor; }
+.kind.rec { color: var(--k-rec); border-style: dashed; }
+.kind.rec::before { border: 1.5px dashed currentColor; width: 5px; height: 5px; }
+.kind.est { color: var(--k-est); border-style: dotted; }
+.kind.est::before { border: 1.5px solid currentColor; width: 5px; height: 5px; }
+.kind.proj { color: var(--k-proj); }
+.kind.proj::before { border-radius: 0; width: 0; height: 0; border-left: 6px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+.kind-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 2px; }
+.stat .k .kind { margin-left: 4px; }
+h4 .kind { margin-left: 6px; }
+.kinds { display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.kinds-head { display: grid; gap: 4px; max-width: 75ch; }
+.kinds-title { font-size: 1.1rem; font-weight: 700; font-stretch: 100%; }
+.kinds-head p { font-size: 0.9rem; color: var(--fg-2); }
+.kinds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px 18px; }
+.kinds-grid > div { display: grid; gap: 6px; align-content: start; }
+.kinds-grid p { font-size: 0.85rem; color: var(--fg-2); line-height: 1.5; }
+.viz-shadelabel { fill: var(--fg-3); font-family: var(--font-body); font-size: 10.5px; font-style: italic; }

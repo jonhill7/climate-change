@@ -43,10 +43,19 @@
       <div class="stripes-axis"><span id="stripes-start">1850</span><span>Each band is one year of global average temperature: blue is cooler, red is warmer</span><span id="stripes-end">2025</span></div>
     </div>
     <div class="stats" id="hero-stats">
-      <div class="stat"><span class="k">Global temperature, latest full year</span><span class="v" id="st-temp">…</span><span class="d" id="st-temp-d">Compared with the 1850–1900 average</span><span class="chip" data-status="igcc">checking</span></div>
-      <div class="stat"><span class="k">Carbon dioxide at Mauna Loa</span><span class="v" id="st-co2">…</span><span class="d" id="st-co2-d">Parts per million</span><span class="chip" data-status="co2">checking</span></div>
-      <div class="stat"><span class="k">Warming attributed to human activity</span><span class="v" id="st-human">…</span><span class="d" id="st-human-d">Best estimate with likely range</span><span class="chip" data-status="attr">checking</span></div>
-      <div class="stat"><span class="k">Global sea level since 1901</span><span class="v" id="st-sea">…</span><span class="d" id="st-sea-d">Tide gauges and satellites</span><span class="chip" data-status="sea">checking</span></div>
+      <div class="stat"><span class="k">Global temperature, latest full year <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-temp">…</span><span class="d" id="st-temp-d">Compared with the 1850–1900 average</span><span class="chip" data-status="igcc">checking</span></div>
+      <div class="stat"><span class="k">Carbon dioxide at Mauna Loa <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-co2">…</span><span class="d" id="st-co2-d">Parts per million</span><span class="chip" data-status="co2">checking</span></div>
+      <div class="stat"><span class="k">Warming attributed to human activity <span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></span><span class="v" id="st-human">…</span><span class="d" id="st-human-d">Best estimate with likely range</span><span class="chip" data-status="attr">checking</span></div>
+      <div class="stat"><span class="k">Global sea level since 1901 <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></span><span class="v" id="st-sea">…</span><span class="d" id="st-sea-d">Tide gauges and satellites</span><span class="chip" data-status="sea">checking</span></div>
+    </div>
+    <div class="kinds" aria-label="Four kinds of numbers">
+      <div class="kinds-head"><h2 class="kinds-title">Four kinds of numbers</h2><p>Every chart is labelled with the kind of evidence behind it. They carry different levels of certainty and should not be compared as if they were the same thing.</p></div>
+      <div class="kinds-grid">
+        <div><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><p>Read directly from instruments: thermometers, Mauna Loa air samples, tide gauges, satellites. Still processed (gaps filled, instruments cross-calibrated), and less complete further back in time.</p></div>
+        <div><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><p>Inferred indirectly: ice cores, tree rings, corals, sediments, sunspot counts. Usually averaged over decades to millennia, with dating and calibration errors, so short swings are smoothed out or lost.</p></div>
+        <div><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span><p>Calculated from physics and models, checked against observations: how strongly each factor pushes on climate, and how much warming each cause produced. Ranges reflect uncertainty in both.</p></div>
+        <div><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span><p>Model results for assumed futures. They depend on emissions choices as well as on physics, so they are "if-then" statements, not forecasts.</p></div>
+      </div>
     </div>
     <div class="how">
       <span><span class="chip live">live</span> fetched from the source as this page loaded</span>
@@ -65,7 +74,7 @@
   </div>
   <div class="figure">
     <div class="figure-head">
-      <div><h3>Global surface temperature, 1850 to today</h3><div class="sub">Difference from the 1850–1900 average, °C</div></div>
+      <div><h3>Global surface temperature, 1850 to today</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div><div class="sub">Difference from the 1850–1900 average, °C</div></div>
       <div class="controls" id="rec-toggles"></div>
     </div>
     <div class="controls">
@@ -75,11 +84,12 @@
     </div>
     <div id="chart-record"></div>
     <p class="cap">Lines: <b>IGCC composite</b> (the multi-dataset average used by the Indicators of Global Climate Change project<sup class="ref"><a href="#r1">1</a></sup>), <b>NASA GISTEMP</b><sup class="ref"><a href="#r3">3</a></sup>, <b>Met Office HadCRUT5</b><sup class="ref"><a href="#r4">4</a></sup> and <b>Berkeley Earth</b><sup class="ref"><a href="#r5">5</a></sup>. Each group uses its own baseline, so the individual records are shifted to match the composite over 1981–2010. Berkeley Earth was started in 2010 partly to test concerns raised by skeptics about station quality and adjustments; it reached the same result.</p>
+    <p class="cap"><b>Measured, but less certain further back.</b> The shaded band around Berkeley Earth is its 95% uncertainty range. It is about <span class="num" id="be-unc-early">±0.2</span> °C in the 1850s, when most measurements came from Europe, North America and shipping lanes, and narrows to about <span class="num" id="be-unc-late">±0.03</span> °C today with near-global coverage. Before 1850 there are too few thermometers for a global average, so earlier temperatures must be reconstructed (Chapter 2).</p>
   </div>
 
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>The last few years, month by month</h3><div class="sub">HadCRUT5 and GISTEMP monthly values, °C vs 1850–1900</div></div></div>
+      <div class="figure-head"><div><h3>The last few years, month by month</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div><div class="sub">HadCRUT5 and GISTEMP monthly values, °C vs 1850–1900</div></div></div>
       <div id="chart-monthly"></div>
       <p class="cap" id="monthly-cap">Individual months bounce around by a few tenths of a degree, largely because of El Niño and La Niña in the Pacific.</p>
     </div>
@@ -98,16 +108,31 @@
   <div class="chapter-head">
     <div class="eyebrow">Chapter 2 · Longer context</div>
     <h2>Climate has always changed. How does today compare?</h2>
-    <p class="lede">Before thermometers, temperatures are reconstructed from ice cores, tree rings, corals, lake and ocean sediments. These are less precise and usually describe averages over centuries, so they can hide brief spikes. With that caveat, here is how the present compares with notable past climates.</p>
+    <p class="lede">Before about 1850 there are no global thermometer records. Earlier temperatures are <strong>reconstructed</strong> from natural archives such as ice cores, tree rings, corals and lake and ocean sediments. These are estimates, not measurements, and they differ from the modern record in ways that matter for any comparison.</p>
   </div>
   <div class="figure">
-    <div class="figure-head"><div><h3>Global temperature in past climates</h3><div class="sub">Assessed ranges relative to 1850–1900, °C (IPCC AR6)</div></div></div>
+    <div class="figure-head"><div><h3>Global temperature in past climates</h3><div class="kind-row"><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Assessed ranges relative to 1850–1900, °C (IPCC AR6)</div></div></div>
     <div id="chart-paleo"></div>
-    <p class="cap">Bars show the IPCC's assessed best estimate where one is given and whiskers the assessed range<sup class="ref"><a href="#r2">2</a></sup><sup class="ref"><a href="#r28">28</a></sup>. Past values are averages over centuries to millennia; the recent value is a 10-year average.</p>
+    <p class="cap">Dots mark the IPCC's best estimate where one is given, otherwise the middle of its assessed range; whiskers show the assessed range<sup class="ref"><a href="#r2">2</a></sup><sup class="ref"><a href="#r28">28</a></sup>. <b>These are not like-for-like.</b> Past values are reconstructed averages over centuries to millennia. The red dot is a measured 10-year average, and the last row is a projection.</p>
+  </div>
+  <div class="grid-2">
+    <div class="figure">
+      <div class="figure-head"><div><h3>What the modern record would look like as a proxy</h3><div class="kind-row"><span class="kind obs">Measured</span></div><div class="sub">The measured 1850–<span class="be-end">2025</span> record, averaged into blocks the way many proxies average time, °C vs 1850–1900</div></div></div>
+      <div class="controls"><span class="lbl">Averaging window</span><div class="seg" id="res-win"><button type="button" aria-pressed="true" data-v="1">1 year</button><button type="button" aria-pressed="false" data-v="30">30 years</button><button type="button" aria-pressed="false" data-v="100">100 years</button><button type="button" aria-pressed="false" data-v="999">Whole record</button></div></div>
+      <div id="chart-res"></div>
+      <p class="cap" id="res-cap">Pick a wider window to see what a lower-resolution record would keep.</p>
+    </div>
+    <div class="prose" style="align-content:start">
+      <h3>Why reconstructed and measured temperatures don't compare evenly</h3>
+      <p><strong>Short swings get smoothed away.</strong> Many proxy records blend decades to centuries into one value, and combining records with different dating errors smooths them further. One widely used reconstruction of the last 11,000 years keeps essentially none of the variability on time scales shorter than about 300 years<sup class="ref"><a href="#r33">33</a></sup>. Year-to-year swings like El Niño, and even a century-long excursion, could be muted or invisible.</p>
+      <p><strong>That cuts both ways.</strong> A brief warm spike in the distant past could be hidden, so "warmest in 100,000 years" compares today's measured average with smoothed estimates. On the other hand, today's warming is projected to persist for centuries because CO₂ stays in the air, so it is unlikely to be a short spike that a future proxy would miss.</p>
+      <p><strong>Errors are larger and harder to pin down.</strong> Proxy readings depend on calibration (how tree growth or a shell's chemistry maps to temperature), often reflect one season or one region, and carry dating errors from decades to thousands of years.</p>
+      <p><strong>How scientists compare fairly:</strong> they compare averages over matching time spans, and they compare rates of change only where records have high resolution. For example, the "fastest in 2,000 years" finding uses annually resolved tree-ring and coral records for that period<sup class="ref"><a href="#r23">23</a></sup>.</p>
+    </div>
   </div>
   <div class="facts">
     <div class="fact"><h4>Bigger natural swings did happen</h4><p>Ice ages came and went on cycles of about 100,000 years, paced by slow changes in Earth's orbit and amplified by CO₂ and ice. Swings of 5–7 °C between glacial and warm periods are far larger than today's change.</p></div>
-    <div class="fact"><h4>But usually far more slowly</h4><p>Leaving the last ice age took about 10,000 years for roughly 6 °C, an average of under 0.1 °C per century. The current rate is about 0.27 °C per decade<sup class="ref"><a href="#r1">1</a></sup>. The IPCC found that warming since 1970 has been faster than in any other 50-year period in at least 2,000 years<sup class="ref"><a href="#r2">2</a></sup>.</p></div>
+    <div class="fact"><h4>But usually far more slowly</h4><p>Leaving the last ice age took about 10,000 years for roughly 6 °C, an average of under 0.1 °C per century. That is an average over a reconstruction, so faster regional jumps (such as those around Greenland at the end of the ice age) are not ruled out. The current rate is about 0.27 °C per decade<sup class="ref"><a href="#r1">1</a></sup>. The IPCC found that warming since 1970 has been faster than in any other 50-year period in at least 2,000 years<sup class="ref"><a href="#r2">2</a></sup>.</p></div>
     <div class="fact"><h4>CO₂ is outside its recent natural range</h4><p>Ice cores show CO₂ between about 180 and 300 ppm over the past 800,000 years. It is now above 420 ppm, the highest in at least 2 million years<sup class="ref"><a href="#r2">2</a></sup>. The last time CO₂ was similar (mid-Pliocene, about 3 million years ago) the world was 2.5–4 °C warmer and seas were many metres higher.</p></div>
     <div class="fact"><h4>Medieval warmth and the Little Ice Age</h4><p>These were real, but large-scale reconstructions find they were not globally synchronous: different regions peaked at different centuries. The current warming is happening in about 98% of the world at once<sup class="ref"><a href="#r23">23</a></sup>.</p></div>
   </div>
@@ -122,13 +147,13 @@
   </div>
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>Carbon dioxide in the air</h3><div class="sub" id="co2-sub">Parts per million</div></div>
+      <div class="figure-head"><div><h3>Carbon dioxide in the air</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub" id="co2-sub">Parts per million</div></div>
         <div class="seg" id="co2-range"><button type="button" aria-pressed="true" data-v="ml">Mauna Loa, monthly</button><button type="button" aria-pressed="false" data-v="long">Since 1750</button></div></div>
       <div id="chart-co2"></div>
-      <p class="cap">Monthly readings from Mauna Loa Observatory, Hawaii (NOAA and Scripps)<sup class="ref"><a href="#r6">6</a></sup>; the zigzag is plants breathing in and out with the Northern Hemisphere seasons. The longer series joins ice-core and air measurements<sup class="ref"><a href="#r1">1</a></sup>.</p>
+      <p class="cap">Monthly readings from Mauna Loa Observatory, Hawaii (NOAA and Scripps)<sup class="ref"><a href="#r6">6</a></sup>; the zigzag is plants breathing in and out with the Northern Hemisphere seasons. The longer series joins ice-core and air measurements<sup class="ref"><a href="#r1">1</a></sup>. Ice-core CO₂ comes from real air trapped in bubbles, but the bubbles close slowly, so each sample blends several decades. That makes it a smoothed record, shown dashed.</p>
     </div>
     <div class="figure">
-      <div class="figure-head"><div><h3>Greenhouse gas emissions</h3><div class="sub">Billion tonnes of CO₂-equivalent per year</div></div></div>
+      <div class="figure-head"><div><h3>Greenhouse gas emissions</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Billion tonnes of CO₂-equivalent per year</div></div></div>
       <div id="chart-emis"></div>
       <div class="legend" id="emis-legend"></div>
       <p class="cap">Fossil fuels and industry dominate. Methane is the second largest. Emissions are still rising, though more slowly than in the 2000s<sup class="ref"><a href="#r1">1</a></sup>.</p>
@@ -137,7 +162,7 @@
 
   <div class="figure">
     <div class="figure-head">
-      <div><h3>Every forcing since 1750, stacked</h3><div class="sub">Effective radiative forcing, W/m², relative to 1750. Above zero warms, below zero cools.</div></div>
+      <div><h3>Every forcing since 1750, stacked</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Effective radiative forcing, W/m², relative to 1750. Above zero warms, below zero cools.</div></div>
       <div class="controls" id="erf-toggles"></div>
     </div>
     <div id="chart-erf"></div>
@@ -146,7 +171,7 @@
 
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>Size of each factor today</h3><div class="sub" id="erf-bars-sub">Forcing relative to 1750, W/m², with 5–95% range</div></div></div>
+      <div class="figure-head"><div><h3>Size of each factor today</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub" id="erf-bars-sub">Forcing relative to 1750, W/m², with 5–95% range</div></div></div>
       <div id="chart-erf-bars"></div>
     </div>
     <div class="prose" style="align-content:start">
@@ -175,18 +200,19 @@
     </div>
     <div class="tabpanel" data-panel="sun">
       <div class="grid-2">
-        <div><h4 style="margin-bottom:6px">Sunlight reaching Earth (total solar irradiance), W/m²</h4><div id="chart-tsi"></div></div>
-        <div><h4 style="margin-bottom:6px">Global temperature, °C vs 1850–1900 (10-year average)</h4><div id="chart-tsi-temp"></div></div>
+        <div><h4 style="margin-bottom:6px">Sunlight reaching Earth (total solar irradiance), W/m² <span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-tsi"></div></div>
+        <div><h4 style="margin-bottom:6px">Global temperature, °C vs 1850–1900 (10-year average) <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-tsi-temp"></div></div>
       </div>
-      <p class="cap">The Sun brightens and dims by about 0.1% over each 11-year cycle. It brightened slightly in the first half of the 1900s and has been flat to slightly dimmer since the 1980s, while temperature rose most steeply. Satellites have measured solar output directly since 1978. Solar data: IGCC composite of satellite and reconstructed irradiance<sup class="ref"><a href="#r1">1</a></sup>.</p>
+      <p class="cap">The Sun brightens and dims by about 0.1% over each 11-year cycle. It brightened slightly in the first half of the 1900s and has been flat to slightly dimmer since the 1980s, while temperature rose most steeply. Satellites have measured solar output directly since 1978; earlier values are reconstructed from sunspot counts and are less certain (shaded and dashed). Solar data: IGCC composite of satellite and reconstructed irradiance<sup class="ref"><a href="#r1">1</a></sup>.</p>
     </div>
     <div class="tabpanel" data-panel="volc" hidden>
+      <div class="kind-row"><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></div>
       <div id="chart-volc"></div>
-      <p class="cap">Stratospheric aerosol optical depth: how much sunlight volcanic haze blocks high in the atmosphere. Large eruptions cool the globe by 0.1–0.5 °C for one to three years, then the haze settles out. They cannot cause a long-term warming trend; a quiet volcanic period can only cause a small, temporary rebound<sup class="ref"><a href="#r1">1</a></sup>.</p>
+      <p class="cap">Stratospheric aerosol optical depth: how much sunlight volcanic haze blocks high in the atmosphere. Before satellites (1979) it is reconstructed from sulfate in ice cores and historical accounts. Large eruptions cool the globe by 0.1–0.5 °C for one to three years, then the haze settles out. They cannot cause a long-term warming trend; a quiet volcanic period can only cause a small, temporary rebound<sup class="ref"><a href="#r1">1</a></sup>.</p>
     </div>
     <div class="tabpanel" data-panel="ocean" hidden>
       <div class="grid-2">
-        <div><h4 style="margin-bottom:6px">Heat gained by the oceans since 1971, zettajoules</h4><div id="chart-ohc"></div></div>
+        <div><h4 style="margin-bottom:6px">Heat gained by the oceans since 1971, zettajoules <span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span></h4><div id="chart-ohc"></div></div>
         <div class="prose" style="align-content:start">
           <p><strong>El Niño / La Niña (ENSO)</strong> swaps heat between the deep Pacific and the surface every 2–7 years, moving global temperature up or down by about 0.1–0.2 °C.</p>
           <p><strong>The Pacific Decadal Oscillation (PDO) and Atlantic Multidecadal Variability (AMO/AMV)</strong> are slower patterns lasting decades. They likely contributed to the 1940s warmth and the slower warming of 1998–2012.</p>
@@ -214,21 +240,21 @@
   </div>
   <div class="figure">
     <div class="figure-head">
-      <div><h3>Observed warming versus its estimated causes</h3><div class="sub">°C relative to 1850–1900; shaded bands are 5–95% ranges</div></div>
+      <div><h3>Observed warming versus its estimated causes</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">°C relative to 1850–1900; shaded bands are 5–95% ranges</div></div>
       <div class="controls"><span class="lbl">Method</span><div class="seg" id="attr-method"><button type="button" aria-pressed="true" data-v="walsh">Global Warming Index</button><button type="button" aria-pressed="false" data-v="gillett">Regression</button><button type="button" aria-pressed="false" data-v="ribes">Kriging</button></div></div>
     </div>
     <div class="controls" id="attr-toggles"></div>
     <div id="chart-attr"></div>
-    <p class="cap">Dots: observed annual temperature (IGCC composite). The three methods are the Global Warming Index (Walsh, Haustein, Otto and colleagues), optimal-fingerprint regression (Gillett), and constrained kriging (Ribes), as used in IPCC AR6 and updated by IGCC 2025<sup class="ref"><a href="#r1">1</a></sup>. "Other human" is mostly aerosol cooling.</p>
+    <p class="cap">Dots are measured; the lines are estimates. Dots: observed annual temperature (IGCC composite). The three methods are the Global Warming Index (Walsh, Haustein, Otto and colleagues), optimal-fingerprint regression (Gillett), and constrained kriging (Ribes), as used in IPCC AR6 and updated by IGCC 2025<sup class="ref"><a href="#r1">1</a></sup>. "Other human" is mostly aerosol cooling.</p>
   </div>
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>The split for <span id="attr-year">2025</span></h3><div class="sub">Assessed contribution to warming since 1850–1900, °C</div></div></div>
+      <div class="figure-head"><div><h3>The split for <span id="attr-year">2025</span></h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">Assessed contribution to warming since 1850–1900, °C</div></div></div>
       <div id="chart-attr-bars"></div>
       <p class="cap">Best estimates with 5–95% ranges from the IGCC 2025 multi-method assessment<sup class="ref"><a href="#r1">1</a></sup>. Year-to-year natural variability (El Niño, etc.) adds roughly ±0.2 °C on top in any single year.</p>
     </div>
     <div class="figure">
-      <div class="figure-head"><div><h3>Warming by what was emitted</h3><div class="sub">°C of warming in 2019 relative to 1750, by emitted substance</div></div></div>
+      <div class="figure-head"><div><h3>Warming by what was emitted</h3><div class="kind-row"><span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></div><div class="sub">°C of warming in 2019 relative to 1750, by emitted substance</div></div></div>
       <div id="chart-species"></div>
       <p class="cap">Grouped by what comes out of the tailpipe or smokestack, as in IPCC AR6 Figure SPM.2. Sulfur dioxide (SO₂) has masked a large share of warming. Data: IGCC (Hausfather)<sup class="ref"><a href="#r1">1</a></sup>.</p>
     </div>
@@ -335,7 +361,7 @@
           </ul></div>
         </div>
         <div class="figure" style="padding:12px 12px 8px">
-          <div class="figure-head"><div><h4>Hunga's forcing next to the human total</h4><div class="sub">W/m². Hunga values are changes relative to 2021, from the IGCC volcanic series</div></div></div>
+          <div class="figure-head"><div><h4>Hunga's forcing next to the human total <span class="kind est" title="Calculated from physical understanding and models, checked against observations">Estimated</span></h4><div class="sub">W/m². Hunga values are changes relative to 2021, from the IGCC volcanic series</div></div></div>
           <div id="chart-hunga"></div>
         </div>
         <div class="hyp-est"><strong>Current best estimate</strong><span>Net effect on global temperature small, a few hundredths of a degree either way. Most studies find slight net cooling in the first two years and a near-zero or slightly positive effect after the sulfate cleared<sup class="ref"><a href="#r8">8</a></sup><sup class="ref"><a href="#r9">9</a></sup><sup class="ref"><a href="#r10">10</a></sup>. The 2023–2024 jump is better explained by El Niño, the solar maximum, cleaner shipping fuel and reduced low cloud (see the last card).</span></div>
@@ -457,14 +483,14 @@
   </div>
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>Global mean sea level</h3><div class="sub">Centimetres relative to the 1995–2014 average; shading is ±1 standard deviation</div></div></div>
+      <div class="figure-head"><div><h3>Global mean sea level</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Centimetres relative to the 1995–2014 average; shading is ±1 standard deviation</div></div></div>
       <div id="chart-sea"></div>
-      <p class="cap">Tide gauges before 1993, satellites since. The rate has roughly tripled, from about 1.3 mm per year in 1901–1971 to over 4 mm per year in the last decade<sup class="ref"><a href="#r1">1</a></sup><sup class="ref"><a href="#r2">2</a></sup>.</p>
+      <p class="cap">Before 1993 the global average is reconstructed from a few hundred unevenly spread tide gauges, hence the wider band. From 1993 satellites measure it almost globally. The rate has roughly tripled, from about 1.3 mm per year in 1901–1971 to over 4 mm per year in the last decade<sup class="ref"><a href="#r1">1</a></sup><sup class="ref"><a href="#r2">2</a></sup>.</p>
     </div>
     <div class="figure">
-      <div class="figure-head"><div><h3>Heat stored in the ocean</h3><div class="sub">Zettajoules (10²¹ J) gained since 1971, full depth</div></div></div>
+      <div class="figure-head"><div><h3>Heat stored in the ocean</h3><div class="kind-row"><span class="kind obs" title="Direct instrument measurements, combined and quality-controlled">Measured</span><span class="kind rec" title="Inferred from indirect evidence such as ice cores, tree rings, sediments or sparse early records">Reconstructed</span></div><div class="sub">Zettajoules (10²¹ J) gained since 1971, full depth</div></div></div>
       <div id="chart-ohc2"></div>
-      <p class="cap">Ship measurements, then the Argo float network from the mid-2000s. Shading is the uncertainty. Data: IGCC 2025 (von Schuckmann, Palmer)<sup class="ref"><a href="#r1">1</a></sup>.</p>
+      <p class="cap">Before the mid-2000s the deep ocean was sampled sparsely by ships, so early values partly rely on gap-filling; since then about 4,000 Argo floats measure it routinely. Shading is the uncertainty. Data: IGCC 2025 (von Schuckmann, Palmer)<sup class="ref"><a href="#r1">1</a></sup>.</p>
     </div>
   </div>
   <div class="facts">
@@ -483,7 +509,7 @@
   </div>
   <div class="figure">
     <div class="figure-head">
-      <div><h3>Projected global warming by scenario</h3><div class="sub">20-year averages, °C relative to 1850–1900; shading is the very likely (5–95%) range</div></div>
+      <div><h3>Projected global warming by scenario</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">20-year averages, °C relative to 1850–1900; shading is the very likely (5–95%) range</div></div>
     </div>
     <div class="scen-chips controls" id="scen-chips"></div>
     <div id="chart-future"></div>
@@ -492,12 +518,12 @@
   </div>
   <div class="grid-2">
     <div class="figure">
-      <div class="figure-head"><div><h3>Where do today's policies point?</h3><div class="sub">Warming around 2100, °C relative to 1850–1900</div></div></div>
+      <div class="figure-head"><div><h3>Where do today's policies point?</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">Warming around 2100, °C relative to 1850–1900</div></div></div>
       <div id="chart-policy"></div>
       <p class="cap">Scenario values: IPCC AR6 (2081–2100). Policy estimates: UNEP Emissions Gap Report 2025<sup class="ref"><a href="#r14">14</a></sup>, central values; independent trackers give similar numbers.</p>
     </div>
     <div class="figure">
-      <div class="figure-head"><div><h3>What each level of warming means for extremes</h3><div class="sub">Compared with the 1850–1900 climate (IPCC AR6, Figure SPM.6)</div></div></div>
+      <div class="figure-head"><div><h3>What each level of warming means for extremes</h3><div class="kind-row"><span class="kind proj" title="Model projections that depend on assumed future emissions">Projected</span></div><div class="sub">Compared with the 1850–1900 climate (IPCC AR6, Figure SPM.6)</div></div></div>
       <div class="table-wrap"><table>
         <thead><tr><th>Global warming</th><th>Once-a-decade heat extreme</th><th>Once-a-decade heavy rain</th><th>Once-a-decade farm drought</th></tr></thead>
         <tbody>
@@ -541,6 +567,7 @@
       <li>Exactly how strong aerosol cooling and cloud feedbacks are.</li>
       <li>How much of the 2023–2024 jump reflects a lasting change.</li>
       <li>Timing and likelihood of tipping points (ice sheets, Atlantic circulation, permafrost).</li>
+      <li>How large and fast natural swings were before thermometers, since reconstructions smooth out short-term variability.</li>
       <li>Regional details, such as rainfall changes in many places.</li>
       <li>Future emissions, which depend on policy, technology and economics rather than physics.</li>
     </ul></div>
@@ -556,7 +583,7 @@
     <p class="lede">The page tries to fetch each dataset from its source as it loads. If a source cannot be reached from your browser (some data providers do not allow cross-site requests, and some viewers block outside requests), the page uses a saved copy and labels it. Saved copies are refreshed weekly by an automated job in the project repository.</p>
   </div>
   <div class="table-wrap"><table id="data-table">
-    <thead><tr><th>Dataset</th><th>Provider</th><th>Latest value</th><th>Status</th></tr></thead>
+    <thead><tr><th>Dataset</th><th>Kind</th><th>Provider</th><th>Latest value</th><th>Status</th></tr></thead>
     <tbody></tbody>
   </table></div>
   <ol class="refs">
@@ -592,6 +619,7 @@
     <li id="r30">Hausfather, Z. Explainer: How data adjustments affect global temperature records. Carbon Brief, 2017; Karl, T. R. et al., Science, 2015.</li>
     <li id="r31">Santer, B. D. et al. Exceptional stratospheric contribution to human fingerprints on atmospheric temperature. PNAS, 2023.</li>
     <li id="r32">Graven, H. et al. Changes to carbon isotopes in atmospheric CO₂ over the industrial era and into the future. Global Biogeochemical Cycles, 2020; Keeling, R. F., Scripps O₂ Program.</li>
+    <li id="r33">Marcott, S. A. et al. A reconstruction of regional and global temperature for the past 11,300 years. Science, 2013.</li>
   </ol>
 </div></section>
 </main>
